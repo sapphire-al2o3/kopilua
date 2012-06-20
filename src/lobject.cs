@@ -220,7 +220,27 @@ namespace KopiLua
 
 		  public Value value = new Value();
 		  public int tt;
-		};
+
+          public override string ToString()
+          {
+              string typename = null;
+              string val = null;
+              switch (tt)
+              {
+                  case LUA_TNIL: typename = "LUA_TNIL"; val = "";  break;
+                  case LUA_TNUMBER: typename = "LUA_TNUMBER"; val = value.n.ToString(); break;
+                  case LUA_TSTRING: typename = "LUA_TSTRING"; val = value.gc.ts.ToString(); break;
+                  case LUA_TTABLE: typename = "LUA_TTABLE"; break;
+                  case LUA_TFUNCTION: typename = "LUA_TFUNCTION"; break;
+                  case LUA_TBOOLEAN: typename = "LUA_TBOOLEAN"; break;
+                  case LUA_TUSERDATA: typename = "LUA_TUSERDATA"; break;
+                  case LUA_TTHREAD: typename = "LUA_TTHREAD"; break;
+                  case LUA_TLIGHTUSERDATA: typename = "LUA_TLIGHTUSERDATA"; break;
+                  default: typename = "unknown"; break;
+              }
+              return string.Format("TValue<{0}>({1})", typename, val);
+          }
+        };
 
 
 		/* Macros to test type */

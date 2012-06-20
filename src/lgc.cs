@@ -31,7 +31,6 @@ namespace KopiLua
 		public const int GCSsweep		= 3;
 		public const int GCSfinalize	= 4;
 
-
 		/*
 		** some userful bit tricks
 		*/
@@ -286,7 +285,7 @@ namespace KopiLua
 			if (ttisnil(gval(n)))
 			  removeentry(n);  /* remove empty entries */
 			else {
-			  lua_assert(ttisnil(gkey(n)));
+			  lua_assert(!ttisnil(gkey(n)));
 			  if (weakkey==0) markvalue(g, gkey(n));
 			  if (weakvalue==0) markvalue(g, gval(n));
 			}
@@ -516,7 +515,7 @@ namespace KopiLua
 			if (curr.gch.tt == LUA_TTHREAD)  /* sweep open upvalues of each thread */
 			  sweepwholelist(L, new OpenValRef( gco2th(curr) ));
 			if (((curr.gch.marked ^ WHITEBITS) & deadmask) != 0) {  /* not dead? */
-			  lua_assert(isdead(g, curr) || testbit(curr.gch.marked, FIXEDBIT));
+			  lua_assert(!isdead(g, curr) || testbit(curr.gch.marked, FIXEDBIT));
 			  makewhite(g, curr);  /* make it white (for next cycle) */
 			  p = new NextRef(curr.gch);
 			}
