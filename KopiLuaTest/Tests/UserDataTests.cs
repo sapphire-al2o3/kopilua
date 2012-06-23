@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using KopiLua;
 
-namespace KopiLuaTest
+namespace KopiLuaTest.Tests
 {
     [TestFixture]
     public class UserDataTests
