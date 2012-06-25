@@ -14,10 +14,10 @@ namespace KopiLuaTest.Tests
         private static string _scriptPath = System.IO.Path.GetFullPath(@"..\..\LuaTestMore");
         private static HashSet<string> _blacklist = new HashSet<string>
             {
+                "241-standalone.t",
 #if false
                 "104-number.t",
                 "201-assign.t",
-                "241-standalone.t",
                 "301-basic.t",
                 "303-package.t",
                 "304-string.t",
@@ -104,6 +104,7 @@ namespace KopiLuaTest.Tests
         //[TestCase("103-nil.t")]
         //[TestCase("201-assign.t")]
         //[TestCase("212-function.t")]
+        //[TestCase("304-string.t")]
         //[TestCase("305-table.t")]
         public void RunTestMoreTest(string filename)
         {
@@ -125,7 +126,20 @@ namespace KopiLuaTest.Tests
                 int result = Lua.lua_pcall(L, 0, -1, 0);
                 if (result != 0)
                 {
-                    var bytes = new UTF8Encoding().GetBytes(GetLuaError(L));
+                    string errorMessage;
+
+                    switch (result)
+                    {
+                        case Lua.LUA_ERRMEM:
+                            errorMessage = "Out of memory";
+                            break;
+
+                        default:
+                            errorMessage = result.ToString() + " " + GetLuaError(L);
+                            break;
+                    }
+                     
+                    var bytes = new UTF8Encoding().GetBytes(errorMessage);
                     errorStream.Write(bytes, 0, bytes.Length);
                 }
             }
