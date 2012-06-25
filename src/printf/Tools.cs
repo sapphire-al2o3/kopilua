@@ -675,15 +675,14 @@ namespace AT.MIN
 				{
 					if ( w.StartsWith( "-" ) )
 						w = w.Substring( 1 );
-					if ( FieldLength != int.MinValue )
-						w = w.PadLeft( FieldLength - 1, Padding );
-					if ( IsPositive( Value, true ) )
-						w = ( PositiveSign ?
-								"+" : ( PositiveSpace ?
-										" " : ( FieldLength != int.MinValue ?
-												Padding.ToString() : String.Empty ) ) ) + w;
-					else
-						w = "-" + w;
+
+                    bool isNegative = !IsPositive(Value, true);
+                    string sign = isNegative ? "-" : PositiveSign ? "+" : PositiveSpace ? " " : "";
+
+                    if (FieldLength != int.MinValue)
+                        w = w.PadLeft(FieldLength - sign.Length, Padding);
+
+                    w = sign + w;
 				}
 			}
 
