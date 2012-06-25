@@ -534,8 +534,22 @@ namespace KopiLua
 		*/
 		public const string LUA_NUMBER_SCAN = "%lf";
 		public const string LUA_NUMBER_FMT = "%.14g";
-		public static CharPtr lua_number2str(double n) { return String.Format("{0}", n); }
-		public const int LUAI_MAXNUMBER2STR = 32; /* 16 digits, sign, point, and \0 */
+        public const int LUAI_MAXNUMBER2STR = 32; /* 16 digits, sign, point, and \0 */
+        
+        public static CharPtr lua_number2str(double n)
+        {
+            if (Double.IsNaN(n))
+                return "nan";
+
+            if (Double.IsInfinity(n))
+            {
+                if (n > 0)
+                    return "inf";
+                return "-inf";
+            }
+            
+            return String.Format("{0}", n);
+        }
 
 		private const string number_chars = "0123456789+-eE.";
 		public static double lua_str2number(CharPtr s, out CharPtr end)
@@ -1278,9 +1292,8 @@ namespace KopiLua
 
 		public static lua_Number fmod(lua_Number a, lua_Number b)
 		{
-			float quotient = (int)Math.Floor(a / b);
-			return a - quotient * b;
-		}
+            return a % b;
+        }
 
 		public static lua_Number modf(lua_Number a, out lua_Number b)
 		{
@@ -1572,7 +1585,7 @@ namespace KopiLua
 
 		public static object VOID(object f) { return f; }
 
-		public const double HUGE_VAL = System.Double.MaxValue;
+        public const double HUGE_VAL = System.Double.PositiveInfinity;
 		public const uint SHRT_MAX = System.UInt16.MaxValue;
 
 		public const int _IONBF = 0;
