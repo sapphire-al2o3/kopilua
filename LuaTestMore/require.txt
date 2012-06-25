@@ -1,0 +1,2 @@
+require 'require2'
+print "ok in require"

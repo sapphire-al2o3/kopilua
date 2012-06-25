@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace KopiLuaTest.Tests
 {
@@ -13,6 +14,7 @@ namespace KopiLuaTest.Tests
         private static string _scriptPath = System.IO.Path.GetFullPath(@"..\..\LuaTestMore");
         private static HashSet<string> _blacklist = new HashSet<string>
             {
+#if false
                 "104-number.t",
                 "201-assign.t",
                 "241-standalone.t",
@@ -23,6 +25,7 @@ namespace KopiLuaTest.Tests
                 "307-io.t",
                 "308-os.t",
                 "310-stdin.t",
+#endif
             };
 
         /// <summary>
@@ -58,84 +61,177 @@ namespace KopiLuaTest.Tests
             RunTestMoreTest(filename);
         }
 
+        public void AssertLuaResult(Lua.lua_State L, int result)
+        {
+            if (result != 0)
+            {
+                Utils.DumpStack(L);
+                Assert.Fail(GetLuaError(L));
+            }
+        }
+
+        public string GetLuaError(Lua.lua_State L)
+        {
+            if (Lua.lua_gettop(L) == 0)
+                return "(no error message)";
+         
+            var s = Lua.lua_tostring(L, -1);
+            if (s == null)
+                return "(null error message)";
+
+            return s.ToString();
+        }
+
+        public void LuaDoString(Lua.lua_State L, string s)
+        {
+            AssertLuaResult(L, Lua.luaL_loadstring(L, s));
+            AssertLuaResult(L, Lua.lua_pcall(L, 0, -1, 0));
+        }
+
+        public void LuaDoString(Lua.lua_State L, string s, params object[] args)
+        {
+            LuaDoString(L, string.Format(s, args));
+        }
+
         /// <summary>
         /// Runs a lua script from Lua-TestMore and interprets the result
         /// </summary>
         /// <param name="filename">Filename of the TestMore test case to run</param>
+        //[TestCase("ultrasimple.txt")]
+        //[TestCase("require.txt")]
+        //[TestCase("001-if.t")]
+        //[TestCase("014-fornum.t")]
+        //[TestCase("103-nil.t")]
+        //[TestCase("201-assign.t")]
+        //[TestCase("212-function.t")]
+        //[TestCase("305-table.t")]
         public void RunTestMoreTest(string filename)
         {
-            var failureLines = new List<string>();
-            bool firstLine = true;
+            var errorStream = new MemoryStream();
+            Lua.stderr = errorStream;
 
-            DataReceivedEventHandler outputHandler = (sender, args) =>
+            var sb = new StringBuilder();
+            using (new CaptureConsole(sb))
+            {
+                var L = Lua.luaL_newstate();
+                Lua.luaL_openlibs(L);
+
+                LuaDoString(L, "arg = {}");
+                LuaDoString(L, "arg[0] = '..\\\\..\\\\LuaTestMore\\\\{0}'", filename);
+                LuaDoString(L, "package.path = package.path .. ';..\\\\..\\\\LuaTestMore\\\\?.lua'");
+
+                AssertLuaResult(L, Lua.luaL_loadfile(L, _scriptPath + "\\" + filename));
+                
+                int result = Lua.lua_pcall(L, 0, -1, 0);
+                if (result != 0)
                 {
-                    string line = args.Data;
+                    var bytes = new UTF8Encoding().GetBytes(GetLuaError(L));
+                    errorStream.Write(bytes, 0, bytes.Length);
+                }
+            }
 
-                    if (line == null)
-                        return;
+            var errors = new List<string>();
 
-                    if (firstLine)
-                    {
-                        firstLine = false;
-                        return;
-                    }
+            errorStream.Seek(0, SeekOrigin.Begin);
 
-                    if (line.StartsWith("ok"))
-                        return;
+            var reader = new StreamReader(errorStream);
+            while (!reader.EndOfStream)
+            {
+                errors.Add(reader.ReadLine());
+            }
 
-                    failureLines.Add(line);
-                };
-
-
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.CreateNoWindow = true;
-            startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.RedirectStandardError = true;
-            startInfo.Arguments = filename;
-            startInfo.FileName = "Lua.exe";
-            startInfo.WorkingDirectory = _scriptPath;
-
-            Process p = new Process();
-            p.StartInfo = startInfo;
-            p.OutputDataReceived += outputHandler;
-            p.ErrorDataReceived += outputHandler;
-
-            p.Start();
-            p.BeginOutputReadLine();
-            p.BeginErrorReadLine();
-            p.WaitForExit();
-
-
-            if (failureLines.Count > 0)
+            if (errors.Count > 0)
             {
                 string message = "";
-                foreach (var line in failureLines)
-                    message = message + "      " + line + "\n";
+                foreach (var line in errors)
+                    message += "      " + line + "\n";
                 Assert.Fail(message);
             }
         }
 
-        /// <summary>
-        /// Check that allocating a string then freeing it doesn't cause the memory 
-        /// manager's total allocation size to drift
-        /// </summary>
-        [Test]
-        public void AllocFreeTest()
+        public class ConsoleWriterStream : Stream
         {
-            var L = Lua.luaL_newstate();
+            public override bool CanRead
+            {
+                get { return false; }
+            }
 
-            uint oldUsedMem = Utils.GetUsedMem(L);
+            public override bool CanSeek
+            {
+                get { return false; }
+            }
 
-            Lua.lua_pushstring(L, "hello world");
+            public override bool CanWrite
+            {
+                get { return true; }
+            }
 
-            uint newUsedMem = Utils.GetUsedMem(L);
-            Assert.AreNotEqual(oldUsedMem, newUsedMem);
+            public override void Flush()
+            {
+                System.Console.Out.Flush();
+            }
 
-            Lua.lua_pop(L, -1);
+            public override long Length
+            {
+                get { throw new NotImplementedException(); }
+            }
 
-            uint finalUsedMem = Utils.GetUsedMem(L);
-            Assert.AreEqual(oldUsedMem, finalUsedMem);
+            public override long Position
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void SetLength(long value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                System.Console.Out.Write(Encoding.UTF8.GetString(buffer, offset, count));
+            }
+        }
+
+        private NUnitListener _nunitListener = new NUnitListener();
+
+        [SetUp]
+        public void DisableAssertDialogs()
+        {
+            //Debug.Listeners.Clear();
+            //Debug.Listeners.Add(_nunitListener);
+            Lua.stdin = new MemoryStream();
+            Lua.stdout = new ConsoleWriterStream();
+            Lua.stderr = new MemoryStream();
+        }
+
+        private class NUnitListener : DefaultTraceListener
+        {
+            public override void Fail(string message)
+            {
+                Assert.Fail(message);
+            }
+
+            public override void Fail(string message, string detailMessage)
+            {
+                Assert.Fail("{0} - {1}", message, detailMessage);
+            }
         }
     }
 }
