@@ -2,11 +2,11 @@
 
 namespace KopiLuaTest
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Execute(TextUI textUI, string[] args)
         {
-            new TextUI(new ConsoleWriter()).Execute(args);
+            textUI.Execute(args);
         }
     }
 }

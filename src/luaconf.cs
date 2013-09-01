@@ -534,8 +534,22 @@ namespace KopiLua
 		*/
 		public const string LUA_NUMBER_SCAN = "%lf";
 		public const string LUA_NUMBER_FMT = "%.14g";
-		public static CharPtr lua_number2str(double n) { return String.Format("{0}", n); }
-		public const int LUAI_MAXNUMBER2STR = 32; /* 16 digits, sign, point, and \0 */
+        public const int LUAI_MAXNUMBER2STR = 32; /* 16 digits, sign, point, and \0 */
+        
+        public static CharPtr lua_number2str(double n)
+        {
+            if (Double.IsNaN(n))
+                return "nan";
+
+            if (Double.IsInfinity(n))
+            {
+                if (n > 0)
+                    return "inf";
+                return "-inf";
+            }
+            
+            return String.Format("{0}", n);
+        }
 
 		private const string number_chars = "0123456789+-eE.";
 		public static double lua_str2number(CharPtr s, out CharPtr end)
@@ -1010,15 +1024,33 @@ namespace KopiLua
 		public const int EXIT_SUCCESS = 0;
 		public const int EXIT_FAILURE = 1;
 
+        public enum ErrNo
+        {
+            None = 0,
+            Unknown,
+            FileNotFound,
+        }
+
+        private static ErrNo lastError = ErrNo.None;
+
 		public static int errno()
 		{
-			return -1;	// todo: fix this - mjf
+            return (int)lastError;
 		}
 
-		public static CharPtr strerror(int error)
-		{
-			return String.Format("error #{0}", error); // todo: check how this works - mjf
-		}
+        public static CharPtr strerror(int error)
+        {
+            switch ((ErrNo)error)
+            {
+                case ErrNo.None:
+                    return "No error";
+                case ErrNo.Unknown:
+                    return "Unknown error";
+                case ErrNo.FileNotFound:
+                    return "No such file or directory";
+            }
+            return "Unknown error #" + error.ToString();
+        }
 
 		public static CharPtr getenv(CharPtr envname)
 		{
@@ -1260,9 +1292,8 @@ namespace KopiLua
 
 		public static lua_Number fmod(lua_Number a, lua_Number b)
 		{
-			float quotient = (int)Math.Floor(a / b);
-			return a - quotient * b;
-		}
+            return a % b;
+        }
 
 		public static lua_Number modf(lua_Number a, out lua_Number b)
 		{
@@ -1286,7 +1317,7 @@ namespace KopiLua
 				f.Seek(-1, SeekOrigin.Current);
 		}
 
-#if XBOX || SILVERLIGHT
+#if XBOX || SILVERLIGHT || NO_STDIO
 		public static Stream stdout;
 		public static Stream stdin;
 		public static Stream stderr;
@@ -1299,7 +1330,7 @@ namespace KopiLua
 
 		public static void fputs(CharPtr str, Stream stream)
 		{
-			Console.Write(str.ToString());
+			Console.Write(str.ToString()); // FIXME: not stream.Write?
 		}
 
 		public static int feof(Stream s)
@@ -1417,9 +1448,11 @@ namespace KopiLua
 			return str + index;
 		}
 
-		public static Stream fopen(CharPtr filename, CharPtr mode)
+		public static Stream fopen_FileStream(CharPtr filename, CharPtr mode)
 		{
-			string str = filename.ToString();			
+            lastError = ErrNo.None;
+
+			string str = filename.ToString();
 			FileMode filemode = FileMode.Open;
 			FileAccess fileaccess = (FileAccess)0;			
 			for (int i=0; mode[i] != '\0'; i++)
@@ -1427,8 +1460,11 @@ namespace KopiLua
 				{
 					case 'r': 
 						fileaccess = fileaccess | FileAccess.Read;
-						if (!File.Exists(str))
-							return null;
+                        if (!File.Exists(str))
+                        {
+                            lastError = ErrNo.FileNotFound;
+                            return null;
+                        }
 						break;
 
 					case 'w':
@@ -1445,6 +1481,10 @@ namespace KopiLua
 				return null;
 			}
 		}
+
+        public delegate Stream FOpenDelegate(CharPtr filename, CharPtr mode);
+
+        public static FOpenDelegate fopen = fopen_FileStream;
 
 		public static Stream freopen(CharPtr filename, CharPtr mode, Stream stream)
 		{
@@ -1545,7 +1585,7 @@ namespace KopiLua
 
 		public static object VOID(object f) { return f; }
 
-		public const double HUGE_VAL = System.Double.MaxValue;
+        public const double HUGE_VAL = System.Double.PositiveInfinity;
 		public const uint SHRT_MAX = System.UInt16.MaxValue;
 
 		public const int _IONBF = 0;

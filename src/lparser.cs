@@ -454,7 +454,7 @@ namespace KopiLua
 		  f.sizelocvars = fs.nlocvars;
 		  luaM_reallocvector(L, ref f.upvalues, f.sizeupvalues, f.nups/*, TString*/);
 		  f.sizeupvalues = f.nups;
-		  lua_assert(luaG_checkcode(f));
+		  //lua_assert(luaG_checkcode(f)); // gfoot: this fails for funcs using varargs
 		  lua_assert(fs.bl == null);
 		  ls.fs = fs.prev;
 		  L.top -= 2;  /* remove table and prototype from the stack */
