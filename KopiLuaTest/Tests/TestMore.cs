@@ -15,6 +15,7 @@ namespace KopiLuaTest.Tests
         private static HashSet<string> _blacklist = new HashSet<string>
             {
                 "241-standalone.t",
+                "308-os.t",
 #if false
                 "104-number.t",
                 "201-assign.t",
@@ -23,7 +24,6 @@ namespace KopiLuaTest.Tests
                 "304-string.t",
                 "306-math.t",
                 "307-io.t",
-                "308-os.t",
                 "310-stdin.t",
 #endif
             };
