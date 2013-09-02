@@ -91,15 +91,17 @@ like(io.output('output.new'), '^file %(0?[Xx]?%x+%)$')
 is(f, io.output(f))
 os.remove('output.new')
 
-f = io.popen([[perl -e "print 'standard output'"]])
-is(io.type(f), 'file', "popen (read)")
-is(f:read(), "standard output")
-io.close(f)
-
-f = io.popen([[perl -pe "s/e/a/"]], 'w')
-is(io.type(f), 'file', "popen (write)")
-f:write("# hello\n") -- not tested : hallo
-f:close()
+if arg[-1] ~= "unity" then
+	f = io.popen([[perl -e "print 'standard output'"]])
+	is(io.type(f), 'file', "popen (read)")
+	is(f:read(), "standard output")
+	io.close(f)
+	
+	f = io.popen([[perl -pe "s/e/a/"]], 'w')
+	is(io.type(f), 'file', "popen (write)")
+	f:write("# hello\n") -- not tested : hallo
+	f:close()
+end
 
 for line in io.lines('file.txt') do
     is(line, "file with text", "function lines(filename)")
