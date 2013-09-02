@@ -356,11 +356,17 @@ namespace KopiLua
 		  CallInfo ci;
 		  markvalue(g, gt(l));
 		  lim = l.top;
-		  for (ci = l.base_ci[0]; ci <= l.ci; CallInfo.inc(ref ci)) {
-			lua_assert(ci.top <= l.stack_last);
-			if (lim < ci.top) lim = ci.top;
-		  }
-		  for (o = l.stack[0]; o < l.top; StkId.inc(ref o))
+          try
+          {
+              for (ci = l.base_ci[0]; ci <= l.ci; CallInfo.inc(ref ci))
+              {
+                  lua_assert(ci.top <= l.stack_last);
+                  if (lim < ci.top) lim = ci.top;
+              }
+          } catch (IndexOutOfRangeException)
+          {
+          }
+		    for (o = l.stack[0]; o < l.top; StkId.inc(ref o))
 			markvalue(g, o);
 		  for (; o <= lim; StkId.inc(ref o))
 			setnilvalue(o);
