@@ -130,7 +130,7 @@ namespace KopiLua
 		  if (token < FIRST_RESERVED) {
 			lua_assert(token == (byte)token);
 			return (iscntrl(token)) ? luaO_pushfstring(ls.L, "char(%d)", token) :
-									  luaO_pushfstring(ls.L, "%c", token);
+									  luaO_pushfstring(ls.L, "%c", (char)token);
 		  }
 		  else
 			return luaX_tokens[(int)token-FIRST_RESERVED];
