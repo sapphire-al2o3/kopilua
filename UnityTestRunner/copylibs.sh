@@ -1,9 +1,9 @@
 #!/bin/bash
 DLLDIR=Assets/DLL
-cp -f ../bin/Debug/KopiLua.dll $DLLDIR
-cp -f ../bin/Debug/KopiLua.pdb $DLLDIR
-cp -f ../bin/Debug/KopiLuaTest.dll $DLLDIR
-cp -f ../bin/Debug/KopiLuaTest.pdb $DLLDIR
+cp -f ../bin/Release/KopiLua.dll $DLLDIR
+cp -f ../bin/Release/KopiLua.pdb $DLLDIR
+cp -f ../bin/Release/KopiLuaTest.dll $DLLDIR
+cp -f ../bin/Release/KopiLuaTest.pdb $DLLDIR
 cp -f ../nunitlite.dll $DLLDIR
 
 cd $DLLDIR
