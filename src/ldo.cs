@@ -170,7 +170,7 @@ namespace KopiLua
 			  f(L, ud);
 		  }
 #if CATCH_EXCEPTIONS
-		  catch (LuaException e)
+		  catch (LuaException)
 		  {
 			  if (lj.status == 0)
 				  lj.status = -1;

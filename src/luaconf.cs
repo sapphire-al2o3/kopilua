@@ -1494,7 +1494,7 @@ namespace KopiLua
 			{
 				return new FileStream(str, filemode, fileaccess);
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				return null;
 			}

@@ -280,7 +280,7 @@ namespace KopiLua
 		    {
 		        result = fscanf(f, LUA_NUMBER_SCAN, parms);
 		    }
-		    catch (FormatException e)
+		    catch (FormatException)
 		    {
 		        return 0;
 		    }
