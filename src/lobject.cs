@@ -265,7 +265,7 @@ namespace KopiLua
 		internal static TString_tsv tsvalue(TValue o) { return rawtsvalue(o).tsv; }
 		internal static Udata rawuvalue(TValue o) { return (Udata)check_exp(ttisuserdata(o), o.value.gc.u); }
 		internal static Udata_uv uvalue(TValue o) { return rawuvalue(o).uv; }
-		internal static Closure clvalue(TValue o) { return (Closure)check_exp(ttisfunction(o), o.value.gc.cl); }
+		public static Closure clvalue(TValue o) { return (Closure)check_exp(ttisfunction(o), o.value.gc.cl); }
 		internal static Table hvalue(TValue o) { return (Table)check_exp(ttistable(o), o.value.gc.h); }
 		internal static int bvalue(TValue o) { return (int)check_exp(ttisboolean(o), o.value.b); }
 		internal static lua_State thvalue(TValue o) { return (lua_State)check_exp(ttisthread(o), o.value.gc.th); }
@@ -279,7 +279,7 @@ namespace KopiLua
 		internal static TString_tsv tsvalue(TValue o) { return rawtsvalue(o).tsv; }
 		internal static Udata rawuvalue(TValue o) { return o.value.gc.u; }
 		internal static Udata_uv uvalue(TValue o) { return rawuvalue(o).uv; }
-		internal static Closure clvalue(TValue o) { return o.value.gc.cl; }
+		public static Closure clvalue(TValue o) { return o.value.gc.cl; }
 		internal static Table hvalue(TValue o) { return o.value.gc.h; }
 		internal static int bvalue(TValue o) { return o.value.b; }
 		internal static lua_State thvalue(TValue o) { return (lua_State)check_exp(ttisthread(o), o.value.gc.th); }
@@ -385,7 +385,7 @@ namespace KopiLua
 		internal static void sethvalue2s(lua_State L, TValue obj, Table x) { sethvalue(L, obj, x); }
 
 		//#define setptvalue2s	setptvalue
-		internal static void setptvalue2s(lua_State L, TValue obj, Proto x) { setptvalue(L, obj, x); }
+		public static void setptvalue2s(lua_State L, TValue obj, Proto x) { setptvalue(L, obj, x); }
 
 		///* from table to same table */
 		//#define setobjt2t	setobj

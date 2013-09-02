@@ -153,12 +153,12 @@ namespace KopiLua
 			SETARG_Bx(i, b + MAXARG_sBx);
 		}
 
-		internal static int CREATE_ABC(OpCode o, int a, int b, int c)
+		public static int CREATE_ABC(OpCode o, int a, int b, int c)
 		{
 			return (int)(((int)o << POS_OP) | (a << POS_A) | (b << POS_B) | (c << POS_C));
 		}
 
-		internal static int CREATE_ABx(OpCode o, int a, int bc)
+		public static int CREATE_ABx(OpCode o, int a, int bc)
 		{
 			int result = (int)(((int)o << POS_OP) | (a << POS_A) | (bc << POS_Bx));
 			return (int)(((int)o << POS_OP) | (a << POS_A) | (bc << POS_Bx));
