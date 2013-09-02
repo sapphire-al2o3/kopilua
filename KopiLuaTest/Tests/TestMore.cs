@@ -16,16 +16,8 @@ namespace KopiLuaTest.Tests
             {
                 "241-standalone.t",
                 "308-os.t",
-#if false
-                "104-number.t",
-                "201-assign.t",
-                "301-basic.t",
-                "303-package.t",
-                "304-string.t",
-                "306-math.t",
-                "307-io.t",
-                "310-stdin.t",
-#endif
+                "307-io.t", // ought to work, at least outside Unity
+                "310-stdin.t",   // never going to work, it keeps trying to invoke lua.exe
             };
 
         /// <summary>
