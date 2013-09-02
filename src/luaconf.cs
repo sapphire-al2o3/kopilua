@@ -1529,8 +1529,16 @@ namespace KopiLua
 
 		public static int fscanf(Stream f, CharPtr format, params object[] argp)
 		{
-			string str = Console.ReadLine();
-			return parse_scanf(str, format, argp);
+		    string str = "";
+
+		    while (true)
+		    {
+		        int b = f.ReadByte();
+		        if (b == -1 || b == '\n') break;
+		        str += (char)b;
+		    }
+
+		    return parse_scanf(str, format, argp);
 		}
 		
 		public static int fseek(Stream f, long offset, int origin)
