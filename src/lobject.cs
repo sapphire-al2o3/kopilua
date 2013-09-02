@@ -836,7 +836,7 @@ namespace KopiLua
 		      }
 		      case 'c': {
 		        CharPtr buff = new char[2];
-		        buff[0] = (char)(int)argp[parm_index++];
+		        buff[0] = (char)argp[parm_index++];
 		        buff[1] = '\0';
 		        pushstr(L, buff);
 		        break;
