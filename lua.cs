@@ -8,6 +8,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.IO;
 using System.Reflection;
@@ -347,14 +348,14 @@ namespace KopiLua
 			for (i = 1; i < n; i++)
 			{
 				if (argv[i] == null) continue;
-				Lua.lua_assert(argv[i][0] == '-');
+				Debug.Assert(argv[i][0] == '-');
 				switch (argv[i][1])
 				{  /* option */
 					case 'e':
 						{
 							string chunk = argv[i].Substring(2);
 							if (chunk == "") chunk = argv[++i];
-							Lua.lua_assert(chunk != null);
+							Debug.Assert(chunk != null);
 							if (dostring(L, chunk, "=(command line)") != 0)
 								return 1;
 							break;
@@ -363,7 +364,7 @@ namespace KopiLua
 						{
 							string filename = argv[i].Substring(2);
 							if (filename == "") filename = argv[++i];
-							Lua.lua_assert(filename != null);
+							Debug.Assert(filename != null);
 							if (dolibrary(L, filename) != 0)
 								return 1;  /* stop if file fails */
 							break;
