@@ -1285,7 +1285,7 @@ namespace KopiLua
 		public static int strlen(CharPtr str)
 		{
 			int index = 0;
-			while (str[index] != '\0')
+			while (index < str.chars.Length && str[index] != '\0')
 				index++;
 			return index;
 		}
@@ -1400,19 +1400,25 @@ namespace KopiLua
 			int index = 0;
 			try
 			{
-				while (true)
+				while (index < str.chars.Length - 1)
 				{
-					str[index] = (char)stream.ReadByte();
-					if (str[index] == '\n')
+				    int value = stream.ReadByte();
+                    if (value == -1)
+                    {
+                        if (index == 0)
+                            return null; // Pass on the EOF signal if no data was read
+                        break;
+                    }
+				    str[index] = (char)value;
+                    index++;
+                    if (value == '\n')
 						break;
-					if (index >= str.chars.Length)
-						break;
-					index++;
 				}
 			}
 			catch
 			{
 			}
+		    str[index] = '\0';
 			return str;
 		}
 
@@ -1476,7 +1482,7 @@ namespace KopiLua
 			{
 				return new FileStream(str, filemode, fileaccess);
 			}
-			catch
+			catch (Exception e)
 			{
 				return null;
 			}
