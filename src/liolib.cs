@@ -275,7 +275,16 @@ namespace KopiLua
 		private static int read_number (lua_State L, Stream f) {
 		  //lua_Number d;
 			object[] parms = { (object)(double)0.0 };
-			if (fscanf(f, LUA_NUMBER_SCAN, parms) == 1)
+		    int result;
+		    try
+		    {
+		        result = fscanf(f, LUA_NUMBER_SCAN, parms);
+		    }
+		    catch (FormatException e)
+		    {
+		        return 0;
+		    }
+		    if (result == 1)
 			{
 				lua_pushnumber(L, (double)parms[0]);
 				return 1;
@@ -477,7 +486,8 @@ namespace KopiLua
 
 		private static int f_flush (lua_State L) {
 			int result = 1;
-			try {tofile(L).Flush();} catch {result = 0;}
+		    Stream stream = tofile(L);
+			try {stream.Flush();} catch {result = 0;}
 			return pushresult(L, result, null);
 		}
 
