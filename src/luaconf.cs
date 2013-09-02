@@ -1318,9 +1318,9 @@ namespace KopiLua
 		}
 
 #if XBOX || SILVERLIGHT || NO_STDIO
-		public static Stream stdout;
-		public static Stream stdin;
-		public static Stream stderr;
+		public static Stream stdout = new MemoryStream();
+		public static Stream stdin = new MemoryStream();
+		public static Stream stderr = new MemoryStream();
 #else
 		public static Stream stdout = Console.OpenStandardOutput();
 		public static Stream stdin = Console.OpenStandardInput();
@@ -1454,10 +1454,23 @@ namespace KopiLua
 			return str + index;
 		}
 
-		public static Stream fopen_FileStream(CharPtr filename, CharPtr mode)
-		{
+        public static Stream fopen(CharPtr filename, CharPtr mode)
+        {
             lastError = ErrNo.None;
 
+            try
+            {
+                return fopenDelegate(filename, mode);
+            }
+            catch (FileNotFoundException)
+            {
+                lastError = ErrNo.FileNotFound;
+                return null;
+            }
+        }
+
+	    public static Stream fopen_FileStream(CharPtr filename, CharPtr mode)
+		{
 			string str = filename.ToString();
 			FileMode filemode = FileMode.Open;
 			FileAccess fileaccess = (FileAccess)0;			
@@ -1468,8 +1481,7 @@ namespace KopiLua
 						fileaccess = fileaccess | FileAccess.Read;
                         if (!File.Exists(str))
                         {
-                            lastError = ErrNo.FileNotFound;
-                            return null;
+                            throw new FileNotFoundException("File not found - " + str);
                         }
 						break;
 
@@ -1490,7 +1502,7 @@ namespace KopiLua
 
         public delegate Stream FOpenDelegate(CharPtr filename, CharPtr mode);
 
-        public static FOpenDelegate fopen = fopen_FileStream;
+        public static FOpenDelegate fopenDelegate = fopen_FileStream;
 
 		public static Stream freopen(CharPtr filename, CharPtr mode, Stream stream)
 		{
