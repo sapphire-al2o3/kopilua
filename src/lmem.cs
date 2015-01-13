@@ -15,20 +15,20 @@ namespace KopiLua
 {
 	public partial class Lua
 	{
-		public const string MEMERRMSG	= "not enough memory";
+		public const string MEMERRMSG = "not enough memory";
 
 		public static T[] luaM_reallocv<T>(lua_State L, T[] block, int new_size) where T : new()
 		{
 			return (T[])luaM_realloc_(L, block, new_size);
 		}
-			
+
 		//#define luaM_freemem(L, b, s)	luaM_realloc_(L, (b), (s), 0)
 		//#define luaM_free(L, b)		luaM_realloc_(L, (b), sizeof(*(b)), 0)
 		//public static void luaM_freearray(lua_State L, object b, int n, Type t) { luaM_reallocv(L, b, n, 0, Marshal.SizeOf(b)); }
 
 		// C# has it's own gc, so nothing to do here...in theory...
-		public static void luaM_freemem<T>(lua_State L, T b) where T : new() { luaM_realloc_<T>(L, new T[] {b}, 0); }
-		public static void luaM_free<T>(lua_State L, T b) where T : new() { luaM_realloc_<T>(L, new T[] {b}, 0); }
+		public static void luaM_freemem<T>(lua_State L, T b) where T : new() { luaM_realloc_<T>(L, new T[] { b }, 0); }
+		public static void luaM_free<T>(lua_State L, T b) where T : new() { luaM_realloc_<T>(L, new T[] { b }, 0); }
 		public static void luaM_freearray<T>(lua_State L, T[] b) where T : new() { luaM_reallocv(L, b, 0); }
 
 		public static T luaM_malloc<T>(lua_State L) where T : new() { return (T)luaM_realloc_<T>(L); }
@@ -72,7 +72,7 @@ namespace KopiLua
 
 
 
-		public const int MINSIZEARRAY	= 4;
+		public const int MINSIZEARRAY = 4;
 
 
 		public static T[] luaM_growaux_<T>(lua_State L, ref T[] block, ref int size,
@@ -98,9 +98,10 @@ namespace KopiLua
 		}
 
 
-		public static object luaM_toobig (lua_State L) {
-		  luaG_runerror(L, "memory allocation error: block too big");
-		  return null;  /* to avoid warnings */
+		public static object luaM_toobig(lua_State L)
+		{
+			luaG_runerror(L, "memory allocation error: block too big");
+			return null;  /* to avoid warnings */
 		}
 
 
@@ -181,7 +182,7 @@ namespace KopiLua
 		static void AddTotalBytes(lua_State L, int num_bytes) { G(L).totalbytes += (uint)num_bytes; }
 		static void SubtractTotalBytes(lua_State L, int num_bytes) { G(L).totalbytes -= (uint)num_bytes; }
 
-		static void AddTotalBytes(lua_State L, uint num_bytes) {G(L).totalbytes += num_bytes;}
-		static void SubtractTotalBytes(lua_State L, uint num_bytes) {G(L).totalbytes -= num_bytes;}
+		static void AddTotalBytes(lua_State L, uint num_bytes) { G(L).totalbytes += num_bytes; }
+		static void SubtractTotalBytes(lua_State L, uint num_bytes) { G(L).totalbytes -= num_bytes; }
 	}
 }

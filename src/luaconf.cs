@@ -13,13 +13,13 @@ using AT.MIN;
 
 namespace KopiLua
 {
-	using LUA_INTEGER	= System.Int32;
-	using LUA_NUMBER	= System.Double;
-	using LUAI_UACNUMBER	= System.Double;
-	using LUA_INTFRM_T		= System.Int64;
+	using LUA_INTEGER = System.Int32;
+	using LUA_NUMBER = System.Double;
+	using LUAI_UACNUMBER = System.Double;
+	using LUA_INTFRM_T = System.Int64;
 	using TValue = Lua.lua_TValue;
 	using lua_Number = System.Double;
-    using System.Globalization;
+	using System.Globalization;
 
 	public partial class Lua
 	{
@@ -91,7 +91,7 @@ namespace KopiLua
 		** hierarchy or if you want to install your libraries in
 		** non-conventional directories.
 		*/
-		#if _WIN32
+#if _WIN32
 		/*
 		** In Windows, any exclamation mark ('!') in the path is replaced by the
 		** path of the directory of the executable file of the current process.
@@ -99,12 +99,12 @@ namespace KopiLua
 		public const string LUA_LDIR = "!\\lua\\";
 		public const string LUA_CDIR = "!\\";
 		public const string LUA_PATH_DEFAULT =
-				".\\?.lua;"  + LUA_LDIR + "?.lua;"  + LUA_LDIR + "?\\init.lua;"
-							 + LUA_CDIR + "?.lua;"  + LUA_CDIR + "?\\init.lua";
+				".\\?.lua;" + LUA_LDIR + "?.lua;" + LUA_LDIR + "?\\init.lua;"
+							 + LUA_CDIR + "?.lua;" + LUA_CDIR + "?\\init.lua";
 		public const string LUA_CPATH_DEFAULT =
-			".\\?.dll;"  + LUA_CDIR + "?.dll;" + LUA_CDIR + "loadall.dll";
+			".\\?.dll;" + LUA_CDIR + "?.dll;" + LUA_CDIR + "loadall.dll";
 
-		#else
+#else
 		public const string LUA_ROOT	= "/usr/local/";
 		public const string LUA_LDIR	= LUA_ROOT + "share/lua/5.1/";
 		public const string LUA_CDIR	= LUA_ROOT + "lib/lua/5.1/";
@@ -121,9 +121,9 @@ namespace KopiLua
 		** CHANGE it if your machine does not use "/" as the directory separator
 		** and is not Windows. (On Windows Lua automatically uses "\".)
 		*/
-		#if _WIN32
+#if _WIN32
 		public const string LUA_DIRSEP = "\\";
-		#else
+#else
 		public const string LUA_DIRSEP = "/";
 #endif
 
@@ -209,8 +209,8 @@ namespace KopiLua
 		@@ LUA_QL describes how error messages quote program elements.
 		** CHANGE it if you want a different appearance.
 		*/
-		public static CharPtr LUA_QL(string x)	{return "'" + x + "'";}
-		public static CharPtr LUA_QS {get {return LUA_QL("%s"); }}
+		public static CharPtr LUA_QL(string x) { return "'" + x + "'"; }
+		public static CharPtr LUA_QS { get { return LUA_QL("%s"); } }
 
 
 		/*
@@ -218,7 +218,7 @@ namespace KopiLua
 		@* of a function in debug information.
 		** CHANGE it if you want a different size.
 		*/
-		public const int LUA_IDSIZE	= 60;
+		public const int LUA_IDSIZE = 60;
 
 
 		/*
@@ -235,16 +235,16 @@ namespace KopiLua
 		** CHANGE it if you have a better definition for non-POSIX/non-Windows
 		** systems.
 		*/
-		#if LUA_USE_ISATTY
+#if LUA_USE_ISATTY
 		//#include <unistd.h>
 		//#define lua_stdin_is_tty()	isatty(0)
-		#elif LUA_WIN
+#elif LUA_WIN
 		//#include <io.h>
 		//#include <stdio.h>
 		//#define lua_stdin_is_tty()	_isatty(_fileno(stdin))
-		#else
+#else
 		public static int lua_stdin_is_tty() { return 1; }  /* assume stdin is a tty */
-		#endif
+#endif
 
 
 		/*
@@ -253,8 +253,8 @@ namespace KopiLua
 		** CHANGE them if you want different prompts. (You can also change the
 		** prompts dynamically, assigning to globals _PROMPT/_PROMPT2.)
 		*/
-		public const string LUA_PROMPT		= "> ";
-		public const string LUA_PROMPT2		= ">> ";
+		public const string LUA_PROMPT = "> ";
+		public const string LUA_PROMPT2 = ">> ";
 
 
 		/*
@@ -262,7 +262,7 @@ namespace KopiLua
 		** CHANGE it if your stand-alone interpreter has a different name and
 		** your system is not able to detect that name automatically.
 		*/
-		public const string LUA_PROGNAME		= "lua";
+		public const string LUA_PROGNAME = "lua";
 
 
 		/*
@@ -270,7 +270,7 @@ namespace KopiLua
 		@* stand-alone interpreter.
 		** CHANGE it if you need longer lines.
 		*/
-		public const int LUA_MAXINPUT	= 512;
+		public const int LUA_MAXINPUT = 512;
 
 
 		/*
@@ -297,11 +297,11 @@ namespace KopiLua
 			fflush(stdout);		/* show prompt */
 			return (fgets(b, stdin) != null);  /* get line */
 		}
-		public static void lua_saveline(lua_State L, int idx)	{}
-		public static void lua_freeline(lua_State L, CharPtr b)	{}
+		public static void lua_saveline(lua_State L, int idx) { }
+		public static void lua_freeline(lua_State L, CharPtr b) { }
 #endif
 
-//#endif
+		//#endif
 
 		/* }================================================================== */
 
@@ -313,7 +313,7 @@ namespace KopiLua
 		** mean larger pauses which mean slower collection.) You can also change
 		** this value dynamically.
 		*/
-		public const int LUAI_GCPAUSE	= 200;  /* 200% (wait memory to double before next GC) */
+		public const int LUAI_GCPAUSE = 200;  /* 200% (wait memory to double before next GC) */
 
 
 		/*
@@ -324,7 +324,7 @@ namespace KopiLua
 		** infinity, where each step performs a full collection.) You can also
 		** change this value dynamically.
 		*/
-		public const int LUAI_GCMUL	= 200; /* GC runs 'twice the speed' of memory allocation */
+		public const int LUAI_GCMUL = 200; /* GC runs 'twice the speed' of memory allocation */
 
 		/*
 		@@ LUA_COMPAT_GETN controls compatibility with old getn behavior.
@@ -387,13 +387,13 @@ namespace KopiLua
 		** a bit, but may be quite useful when debugging C code that interfaces
 		** with Lua. A useful redefinition is to use assert.h.
 		*/
-		#if LUA_USE_APICHECK
+#if LUA_USE_APICHECK
 			public static void luai_apicheck(lua_State L, bool o)	{Debug.Assert(o);}
 			public static void luai_apicheck(lua_State L, int o) {Debug.Assert(o != 0);}
-		#else
-			public static void luai_apicheck(lua_State L, bool o)	{}
-			public static void luai_apicheck(lua_State L, int o) { }
-		#endif
+#else
+		public static void luai_apicheck(lua_State L, bool o) { }
+		public static void luai_apicheck(lua_State L, int o) { }
+#endif
 
 
 		/*
@@ -406,7 +406,7 @@ namespace KopiLua
 		//public const int LUAI_BITSINT	= 16
 		//#elif INT_MAX > 2147483640L
 		/* int has at least 32 bits */
-		public const int LUAI_BITSINT	= 32;
+		public const int LUAI_BITSINT = 32;
 		//#else
 		//#error "you must define LUA_BITSINT with number of bits in an integer"
 		//#endif
@@ -446,7 +446,7 @@ namespace KopiLua
 		** arbitrary; its only purpose is to stop infinite recursion before
 		** exhausting memory.
 		*/
-		public const int LUAI_MAXCALLS	= 20000;
+		public const int LUAI_MAXCALLS = 20000;
 
 
 		/*
@@ -457,7 +457,7 @@ namespace KopiLua
 		** functions to consume unlimited stack space. (must be smaller than
 		** -LUA_REGISTRYINDEX)
 		*/
-		public const int LUAI_MAXCSTACK	= 8000;
+		public const int LUAI_MAXCSTACK = 8000;
 
 
 
@@ -479,27 +479,27 @@ namespace KopiLua
 		@@ LUAI_MAXCCALLS is the maximum depth for nested C calls (short) and
 		@* syntactical nested non-terminals in a program.
 		*/
-		public const int LUAI_MAXCCALLS		= 200;
+		public const int LUAI_MAXCCALLS = 200;
 
 
 		/*
 		@@ LUAI_MAXVARS is the maximum number of local variables per function
 		@* (must be smaller than 250).
 		*/
-		public const int LUAI_MAXVARS		= 200;
+		public const int LUAI_MAXVARS = 200;
 
 
 		/*
 		@@ LUAI_MAXUPVALUES is the maximum number of upvalues per function
 		@* (must be smaller than 250).
 		*/
-		public const int LUAI_MAXUPVALUES	= 60;
+		public const int LUAI_MAXUPVALUES = 60;
 
 
 		/*
 		@@ LUAL_BUFFERSIZE is the buffer size used by the lauxlib buffer system.
 		*/
-		public const int LUAL_BUFFERSIZE		= 1024; // BUFSIZ; todo: check this - mjf
+		public const int LUAL_BUFFERSIZE = 1024; // BUFSIZ; todo: check this - mjf
 
 		/* }================================================================== */
 
@@ -534,26 +534,26 @@ namespace KopiLua
 		*/
 		public const string LUA_NUMBER_SCAN = "%lf";
 		public const string LUA_NUMBER_FMT = "%.14g";
-        public const int LUAI_MAXNUMBER2STR = 32; /* 16 digits, sign, point, and \0 */
-        
-        public static CharPtr lua_number2str(double n)
-        {
-            if (Double.IsNaN(n))
-                return "nan";
+		public const int LUAI_MAXNUMBER2STR = 32; /* 16 digits, sign, point, and \0 */
 
-            if (Double.IsInfinity(n))
-            {
-                if (n > 0)
-                    return "inf";
-                return "-inf";
-            }
-            
-            return String.Format("{0}", n);
-        }
+		public static CharPtr lua_number2str(double n)
+		{
+			if (Double.IsNaN(n))
+				return "nan";
+
+			if (Double.IsInfinity(n))
+			{
+				if (n > 0)
+					return "inf";
+				return "-inf";
+			}
+
+			return String.Format("{0}", n);
+		}
 
 		private const string number_chars = "0123456789+-eE.";
 		public static double lua_str2number(CharPtr s, out CharPtr end)
-		{			
+		{
 			end = new CharPtr(s.chars, s.index);
 			string str = "";
 			while (end[0] == ' ')
@@ -583,19 +583,19 @@ namespace KopiLua
 			}
 		}
 
-        private static IFormatProvider Culture(string p)
-        {
+		private static IFormatProvider Culture(string p)
+		{
 #if SILVERLIGHT
             return new CultureInfo(p);
 #else
-            return CultureInfo.GetCultureInfo(p);
+			return CultureInfo.GetCultureInfo(p);
 #endif
-        }
+		}
 
 		/*
 		@@ The luai_num* macros define the primitive operations over numbers.
 		*/
-		#if LUA_CORE
+#if LUA_CORE
 		//#include <math.h>
 		public delegate lua_Number op_delegate(lua_Number a, lua_Number b);
 		public static lua_Number luai_numadd(lua_Number a, lua_Number b) { return ((a) + (b)); }
@@ -609,7 +609,7 @@ namespace KopiLua
 		public static bool luai_numlt(lua_Number a, lua_Number b) { return ((a) < (b)); }
 		public static bool luai_numle(lua_Number a, lua_Number b) { return ((a) <= (b)); }
 		public static bool luai_numisnan(lua_Number a) { return lua_Number.IsNaN(a); }
-		#endif
+#endif
 
 
 		/*
@@ -650,7 +650,7 @@ namespace KopiLua
 
 		//#endif
 
-		private static void lua_number2int(out int i,lua_Number d)   {i = (int)d;}
+		private static void lua_number2int(out int i, lua_Number d) { i = (int)d; }
 		private static void lua_number2integer(out int i, lua_Number n) { i = (int)n; }
 
 		/* }================================================================== */
@@ -683,10 +683,11 @@ namespace KopiLua
 		*/
 		//#if defined(__cplusplus)
 		///* C++ exceptions */
-		public static void LUAI_THROW(lua_State L, lua_longjmp c)	{throw new LuaException(L, c);}
+		public static void LUAI_THROW(lua_State L, lua_longjmp c) { throw new LuaException(L, c); }
 		//#define LUAI_TRY(L,c,a)	try { a } catch(...) \
 		//    { if ((c).status == 0) (c).status = -1; }
-		public static void LUAI_TRY(lua_State L, lua_longjmp c, object a) {
+		public static void LUAI_TRY(lua_State L, lua_longjmp c, object a)
+		{
 			if (c.status == 0) c.status = -1;
 		}
 		//#define luai_jmpbuf	int  /* dummy variable */
@@ -711,7 +712,7 @@ namespace KopiLua
 		@* can do during pattern-matching.
 		** CHANGE it if you need more captures. This limit is arbitrary.
 		*/
-		public const int LUA_MAXCAPTURES		= 32;
+		public const int LUA_MAXCAPTURES = 32;
 
 
 		/*
@@ -722,9 +723,9 @@ namespace KopiLua
 		** insecure) or if you want the original tmpnam anyway.  By default, Lua
 		** uses tmpnam except when POSIX is available, where it uses mkstemp.
 		*/
-		#if loslib_c || luaall_c
+#if loslib_c || luaall_c
 
-		#if LUA_USE_MKSTEMP
+#if LUA_USE_MKSTEMP
 		//#include <unistd.h>
 		public const int LUA_TMPNAMBUFSIZE	= 32;
 		//#define lua_tmpnam(b,e)	{ \
@@ -733,12 +734,12 @@ namespace KopiLua
 		//    if (e != -1) close(e); \
 		//    e = (e == -1); }
 
-		#else
+#else
 			public const int LUA_TMPNAMBUFSIZE	= L_tmpnam;
 			public static void lua_tmpnam(CharPtr b, int e)		{ e = (tmpnam(b) == null) ? 1 : 0; }
-		#endif
+#endif
 
-		#endif
+#endif
 
 
 		/*
@@ -760,7 +761,7 @@ namespace KopiLua
 
 		public static Stream lua_popen(lua_State L, CharPtr c, CharPtr m) { luaL_error(L, LUA_QL("popen") + " not supported"); return null; }
 		public static int lua_pclose(lua_State L, Stream file) { return 0; }
-	
+
 		//#endif
 
 		/*
@@ -792,7 +793,7 @@ namespace KopiLua
 		** CHANGE (define) this if you really need that. This value must be
 		** a multiple of the maximum alignment required for your machine.
 		*/
-		public const int LUAI_EXTRASPACE		= 0;
+		public const int LUAI_EXTRASPACE = 0;
 
 
 		/*
@@ -800,12 +801,12 @@ namespace KopiLua
 		** CHANGE them if you defined LUAI_EXTRASPACE and need to do something
 		** extra when a thread is created/deleted/resumed/yielded.
 		*/
-		public static void luai_userstateopen(lua_State L)					{}
-		public static void luai_userstateclose(lua_State L)					{}
-		public static void luai_userstatethread(lua_State L, lua_State L1)	{}
-		public static void luai_userstatefree(lua_State L)					{}
-		public static void luai_userstateresume(lua_State L,int n)			{}
-		public static void luai_userstateyield(lua_State L,int n)			{}
+		public static void luai_userstateopen(lua_State L) { }
+		public static void luai_userstateclose(lua_State L) { }
+		public static void luai_userstatethread(lua_State L, lua_State L1) { }
+		public static void luai_userstatefree(lua_State L) { }
+		public static void luai_userstateresume(lua_State L, int n) { }
+		public static void luai_userstateyield(lua_State L, int n) { }
 
 
 		/*
@@ -816,17 +817,17 @@ namespace KopiLua
 		** CHANGE them if your system supports long long or does not support long.
 		*/
 
-		#if LUA_USELONGLONG
+#if LUA_USELONGLONG
 
 		public const string LUA_INTFRMLEN		= "ll";
 		//#define LUA_INTFRM_T		long long
 
-		#else
+#else
 
 		public const string LUA_INTFRMLEN = "l";
 		//#define LUA_INTFRM_T		long			/* declared in dotnet build with using statement */
 
-		#endif
+#endif
 
 
 
@@ -844,7 +845,7 @@ namespace KopiLua
 		public static bool isdigit(char c) { return Char.IsDigit(c); }
 		public static bool islower(char c) { return Char.IsLower(c); }
 		public static bool ispunct(char c) { return Char.IsPunctuation(c); }
-		public static bool isspace(char c) { return (c==' ') || (c>=(char)0x09 && c<=(char)0x0D); }
+		public static bool isspace(char c) { return (c == ' ') || (c >= (char)0x09 && c <= (char)0x0D); }
 		public static bool isupper(char c) { return Char.IsUpper(c); }
 		public static bool isalnum(char c) { return Char.IsLetterOrDigit(c); }
 		public static bool isxdigit(char c) { return "0123456789ABCDEFabcdef".IndexOf(c) >= 0; }
@@ -896,7 +897,7 @@ namespace KopiLua
 				while (true)
 				{
 					// get this char
-					char ch = end[0];					
+					char ch = end[0];
 
 					// which digit is this?
 					int this_digit = 0;
@@ -961,7 +962,7 @@ namespace KopiLua
 			int index = 0;
 			while (fmt[index] != 0)
 			{
-				if (fmt[index++]=='%')
+				if (fmt[index++] == '%')
 					switch (fmt[index++])
 					{
 						case 's':
@@ -971,22 +972,22 @@ namespace KopiLua
 							}
 						case 'c':
 							{
-                                argp[parm_index++] = Convert.ToChar(str, Culture("en-US"));
+								argp[parm_index++] = Convert.ToChar(str, Culture("en-US"));
 								break;
 							}
 						case 'd':
 							{
-                                argp[parm_index++] = Convert.ToInt32(str, Culture("en-US"));
+								argp[parm_index++] = Convert.ToInt32(str, Culture("en-US"));
 								break;
 							}
 						case 'l':
 							{
-                                argp[parm_index++] = Convert.ToDouble(str, Culture("en-US"));
+								argp[parm_index++] = Convert.ToDouble(str, Culture("en-US"));
 								break;
 							}
 						case 'f':
 							{
-                                argp[parm_index++] = Convert.ToDouble(str, Culture("en-US"));
+								argp[parm_index++] = Convert.ToDouble(str, Culture("en-US"));
 								break;
 							}
 						//case 'p':
@@ -1015,7 +1016,7 @@ namespace KopiLua
 			string result = Tools.sprintf(str.ToString(), argv);
 			char[] chars = result.ToCharArray();
 			byte[] bytes = new byte[chars.Length];
-			for (int i=0; i<chars.Length; i++)
+			for (int i = 0; i < chars.Length; i++)
 				bytes[i] = (byte)chars[i];
 			stream.Write(bytes, 0, bytes.Length);
 			return 1;
@@ -1024,39 +1025,39 @@ namespace KopiLua
 		public const int EXIT_SUCCESS = 0;
 		public const int EXIT_FAILURE = 1;
 
-        public enum ErrNo
-        {
-            None = 0,
-            Unknown,
-            FileNotFound,
-        }
+		public enum ErrNo
+		{
+			None = 0,
+			Unknown,
+			FileNotFound,
+		}
 
-        private static ErrNo lastError = ErrNo.None;
+		private static ErrNo lastError = ErrNo.None;
 
 		public static int errno()
 		{
-            return (int)lastError;
+			return (int)lastError;
 		}
 
-        public static CharPtr strerror(int error)
-        {
-            switch ((ErrNo)error)
-            {
-                case ErrNo.None:
-                    return "No error";
-                case ErrNo.Unknown:
-                    return "Unknown error";
-                case ErrNo.FileNotFound:
-                    return "No such file or directory";
-            }
-            return "Unknown error #" + error.ToString();
-        }
+		public static CharPtr strerror(int error)
+		{
+			switch ((ErrNo)error)
+			{
+				case ErrNo.None:
+					return "No error";
+				case ErrNo.Unknown:
+					return "Unknown error";
+				case ErrNo.FileNotFound:
+					return "No such file or directory";
+			}
+			return "Unknown error #" + error.ToString();
+		}
 
 		public static CharPtr getenv(CharPtr envname)
 		{
 			// todo: fix this - mjf
 			//if (envname == "LUA_PATH)
-				//return "MyPath";
+			//return "MyPath";
 			return null;
 		}
 
@@ -1064,7 +1065,7 @@ namespace KopiLua
 		{
 			public char[] chars;
 			public int index;
-			
+
 			public char this[int offset]
 			{
 				get { return chars[index + offset]; }
@@ -1126,8 +1127,8 @@ namespace KopiLua
 				this.index = 0;
 			}
 
-			public static CharPtr operator +(CharPtr ptr, int offset) {return new CharPtr(ptr.chars, ptr.index+offset);}
-			public static CharPtr operator -(CharPtr ptr, int offset) {return new CharPtr(ptr.chars, ptr.index-offset);}
+			public static CharPtr operator +(CharPtr ptr, int offset) { return new CharPtr(ptr.chars, ptr.index + offset); }
+			public static CharPtr operator -(CharPtr ptr, int offset) { return new CharPtr(ptr.chars, ptr.index - offset); }
 			public static CharPtr operator +(CharPtr ptr, uint offset) { return new CharPtr(ptr.chars, ptr.index + (int)offset); }
 			public static CharPtr operator -(CharPtr ptr, uint offset) { return new CharPtr(ptr.chars, ptr.index - (int)offset); }
 
@@ -1137,7 +1138,7 @@ namespace KopiLua
 			public CharPtr prev() { return new CharPtr(this.chars, this.index - 1); }
 			public CharPtr add(int ofs) { return new CharPtr(this.chars, this.index + ofs); }
 			public CharPtr sub(int ofs) { return new CharPtr(this.chars, this.index - ofs); }
-			
+
 			public static bool operator ==(CharPtr ptr, char ch) { return ptr[0] == ch; }
 			public static bool operator ==(char ch, CharPtr ptr) { return ptr[0] == ch; }
 			public static bool operator !=(CharPtr ptr, char ch) { return ptr[0] != ch; }
@@ -1152,24 +1153,36 @@ namespace KopiLua
 					result += ptr2[i];
 				return new CharPtr(result);
 			}
-			public static int operator -(CharPtr ptr1, CharPtr ptr2) {
-				Debug.Assert(ptr1.chars == ptr2.chars); return ptr1.index - ptr2.index; }
-			public static bool operator <(CharPtr ptr1, CharPtr ptr2) {
-				Debug.Assert(ptr1.chars == ptr2.chars); return ptr1.index < ptr2.index; }
-			public static bool operator <=(CharPtr ptr1, CharPtr ptr2) {
-				Debug.Assert(ptr1.chars == ptr2.chars); return ptr1.index <= ptr2.index; }
-			public static bool operator >(CharPtr ptr1, CharPtr ptr2) {
-				Debug.Assert(ptr1.chars == ptr2.chars); return ptr1.index > ptr2.index; }
-			public static bool operator >=(CharPtr ptr1, CharPtr ptr2) {
-				Debug.Assert(ptr1.chars == ptr2.chars); return ptr1.index >= ptr2.index; }
-			public static bool operator ==(CharPtr ptr1, CharPtr ptr2) {
+			public static int operator -(CharPtr ptr1, CharPtr ptr2)
+			{
+				Debug.Assert(ptr1.chars == ptr2.chars); return ptr1.index - ptr2.index;
+			}
+			public static bool operator <(CharPtr ptr1, CharPtr ptr2)
+			{
+				Debug.Assert(ptr1.chars == ptr2.chars); return ptr1.index < ptr2.index;
+			}
+			public static bool operator <=(CharPtr ptr1, CharPtr ptr2)
+			{
+				Debug.Assert(ptr1.chars == ptr2.chars); return ptr1.index <= ptr2.index;
+			}
+			public static bool operator >(CharPtr ptr1, CharPtr ptr2)
+			{
+				Debug.Assert(ptr1.chars == ptr2.chars); return ptr1.index > ptr2.index;
+			}
+			public static bool operator >=(CharPtr ptr1, CharPtr ptr2)
+			{
+				Debug.Assert(ptr1.chars == ptr2.chars); return ptr1.index >= ptr2.index;
+			}
+			public static bool operator ==(CharPtr ptr1, CharPtr ptr2)
+			{
 				object o1 = ptr1 as CharPtr;
 				object o2 = ptr2 as CharPtr;
 				if ((o1 == null) && (o2 == null)) return true;
 				if (o1 == null) return false;
 				if (o2 == null) return false;
-				return (ptr1.chars == ptr2.chars) && (ptr1.index == ptr2.index); }
-			public static bool operator !=(CharPtr ptr1, CharPtr ptr2) {return !(ptr1 == ptr2); }
+				return (ptr1.chars == ptr2.chars) && (ptr1.index == ptr2.index);
+			}
+			public static bool operator !=(CharPtr ptr1, CharPtr ptr2) { return !(ptr1 == ptr2); }
 
 			public override bool Equals(object o)
 			{
@@ -1183,7 +1196,7 @@ namespace KopiLua
 			public override string ToString()
 			{
 				string result = "";
-				for (int i = index; (i<chars.Length) && (chars[i] != '\0'); i++)
+				for (int i = index; (i < chars.Length) && (chars[i] != '\0'); i++)
 					result += chars[i];
 				return result;
 			}
@@ -1192,10 +1205,10 @@ namespace KopiLua
 		public static int memcmp(CharPtr ptr1, CharPtr ptr2, uint size) { return memcmp(ptr1, ptr2, (int)size); }
 		public static int memcmp(CharPtr ptr1, CharPtr ptr2, int size)
 		{
-			for (int i=0; i<size; i++)
-				if (ptr1[i]!=ptr2[i])
+			for (int i = 0; i < size; i++)
+				if (ptr1[i] != ptr2[i])
 				{
-					if (ptr1[i]<ptr2[i])
+					if (ptr1[i] < ptr2[i])
 						return -1;
 					else
 						return 1;
@@ -1213,7 +1226,7 @@ namespace KopiLua
 
 		public static CharPtr strpbrk(CharPtr str, CharPtr charset)
 		{
-			for (int i=0; str[i] != '\0'; i++)
+			for (int i = 0; str[i] != '\0'; i++)
 				for (int j = 0; charset[j] != '\0'; j++)
 					if (str[i] == charset[j])
 						return new CharPtr(str.chars, str.index + i);
@@ -1272,7 +1285,7 @@ namespace KopiLua
 		public static CharPtr strncpy(CharPtr dst, CharPtr src, int length)
 		{
 			int index = 0;
-			while ((src[index] != '\0') && (index<length))
+			while ((src[index] != '\0') && (index < length))
 			{
 				dst[index] = src[index];
 				index++;
@@ -1292,8 +1305,8 @@ namespace KopiLua
 
 		public static lua_Number fmod(lua_Number a, lua_Number b)
 		{
-            return a % b;
-        }
+			return a % b;
+		}
 
 		public static lua_Number modf(lua_Number a, out lua_Number b)
 		{
@@ -1347,7 +1360,7 @@ namespace KopiLua
 				int result = stream.Read(bytes, 0, num_bytes);
 				for (int i = 0; i < result; i++)
 					ptr[i] = (char)bytes[i];
-				return result/size;
+				return result / size;
 			}
 			catch
 			{
@@ -1402,23 +1415,23 @@ namespace KopiLua
 			{
 				while (index < str.chars.Length - 1)
 				{
-				    int value = stream.ReadByte();
-                    if (value == -1)
-                    {
-                        if (index == 0)
-                            return null; // Pass on the EOF signal if no data was read
-                        break;
-                    }
-				    str[index] = (char)value;
-                    index++;
-                    if (value == '\n')
+					int value = stream.ReadByte();
+					if (value == -1)
+					{
+						if (index == 0)
+							return null; // Pass on the EOF signal if no data was read
+						break;
+					}
+					str[index] = (char)value;
+					index++;
+					if (value == '\n')
 						break;
 				}
 			}
 			catch
 			{
 			}
-		    str[index] = '\0';
+			str[index] = '\0';
 			return str;
 		}
 
@@ -1454,35 +1467,35 @@ namespace KopiLua
 			return str + index;
 		}
 
-        public static Stream fopen(CharPtr filename, CharPtr mode)
-        {
-            lastError = ErrNo.None;
+		public static Stream fopen(CharPtr filename, CharPtr mode)
+		{
+			lastError = ErrNo.None;
 
-            try
-            {
-                return fopenDelegate(filename, mode);
-            }
-            catch (FileNotFoundException)
-            {
-                lastError = ErrNo.FileNotFound;
-                return null;
-            }
-        }
+			try
+			{
+				return fopenDelegate(filename, mode);
+			}
+			catch (FileNotFoundException)
+			{
+				lastError = ErrNo.FileNotFound;
+				return null;
+			}
+		}
 
-	    public static Stream fopen_FileStream(CharPtr filename, CharPtr mode)
+		public static Stream fopen_FileStream(CharPtr filename, CharPtr mode)
 		{
 			string str = filename.ToString();
 			FileMode filemode = FileMode.Open;
-			FileAccess fileaccess = (FileAccess)0;			
-			for (int i=0; mode[i] != '\0'; i++)
+			FileAccess fileaccess = (FileAccess)0;
+			for (int i = 0; mode[i] != '\0'; i++)
 				switch (mode[i])
 				{
-					case 'r': 
+					case 'r':
 						fileaccess = fileaccess | FileAccess.Read;
-                        if (!File.Exists(str))
-                        {
-                            throw new FileNotFoundException("File not found - " + str);
-                        }
+						if (!File.Exists(str))
+						{
+							throw new FileNotFoundException("File not found - " + str);
+						}
 						break;
 
 					case 'w':
@@ -1500,9 +1513,9 @@ namespace KopiLua
 			}
 		}
 
-        public delegate Stream FOpenDelegate(CharPtr filename, CharPtr mode);
+		public delegate Stream FOpenDelegate(CharPtr filename, CharPtr mode);
 
-        public static FOpenDelegate fopenDelegate = fopen_FileStream;
+		public static FOpenDelegate fopenDelegate = fopen_FileStream;
 
 		public static Stream freopen(CharPtr filename, CharPtr mode, Stream stream)
 		{
@@ -1541,18 +1554,18 @@ namespace KopiLua
 
 		public static int fscanf(Stream f, CharPtr format, params object[] argp)
 		{
-		    string str = "";
+			string str = "";
 
-		    while (true)
-		    {
-		        int b = f.ReadByte();
-		        if (b == -1 || b == '\n') break;
-		        str += (char)b;
-		    }
+			while (true)
+			{
+				int b = f.ReadByte();
+				if (b == -1 || b == '\n') break;
+				str += (char)b;
+			}
 
-		    return parse_scanf(str, format, argp);
+			return parse_scanf(str, format, argp);
 		}
-		
+
 		public static int fseek(Stream f, long offset, int origin)
 		{
 			try
@@ -1592,14 +1605,14 @@ namespace KopiLua
 
 		public static void memcpy<T>(T[] dst, int offset, T[] src, int length)
 		{
-			for (int i=0; i<length; i++)
-				dst[offset+i] = src[i];
+			for (int i = 0; i < length; i++)
+				dst[offset + i] = src[i];
 		}
 
 		public static void memcpy<T>(T[] dst, T[] src, int srcofs, int length)
 		{
 			for (int i = 0; i < length; i++)
-				dst[i] = src[srcofs+i];
+				dst[i] = src[srcofs + i];
 		}
 
 		public static void memcpy(CharPtr ptr1, CharPtr ptr2, uint size) { memcpy(ptr1, ptr2, (int)size); }
@@ -1611,7 +1624,7 @@ namespace KopiLua
 
 		public static object VOID(object f) { return f; }
 
-        public const double HUGE_VAL = System.Double.PositiveInfinity;
+		public const double HUGE_VAL = System.Double.PositiveInfinity;
 		public const uint SHRT_MAX = System.UInt16.MaxValue;
 
 		public const int _IONBF = 0;
@@ -1727,7 +1740,7 @@ namespace KopiLua
 			else if (t == typeof(Int32))
 				return 4;
 			else if (t == typeof(Single))
-				return 4;			
+				return 4;
 			Debug.Assert(false, "Trying to get unknown sized of unmanaged type " + t.ToString());
 			return 0;
 		}

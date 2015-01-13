@@ -32,24 +32,24 @@ namespace KopiLua
 		===========================================================================*/
 
 
-		public enum OpMode {iABC, iABx, iAsBx};  /* basic instruction format */
+		public enum OpMode { iABC, iABx, iAsBx };  /* basic instruction format */
 
 
 		/*
 		** size and position of opcode arguments.
 		*/
-		public const int SIZE_C		= 9;
-		public const int SIZE_B		= 9;
-		public const int SIZE_Bx	= (SIZE_C + SIZE_B);
-		public const int SIZE_A		= 8;
+		public const int SIZE_C = 9;
+		public const int SIZE_B = 9;
+		public const int SIZE_Bx = (SIZE_C + SIZE_B);
+		public const int SIZE_A = 8;
 
-		public const int SIZE_OP	= 6;
+		public const int SIZE_OP = 6;
 
-		public const int POS_OP		= 0;
-		public const int POS_A		= (POS_OP + SIZE_OP);
-		public const int POS_C		= (POS_A + SIZE_A);
-		public const int POS_B		= (POS_C + SIZE_C);
-		public const int POS_Bx		= POS_C;
+		public const int POS_OP = 0;
+		public const int POS_A = (POS_OP + SIZE_OP);
+		public const int POS_C = (POS_A + SIZE_A);
+		public const int POS_B = (POS_C + SIZE_C);
+		public const int POS_Bx = POS_C;
 
 
 		/*
@@ -58,17 +58,17 @@ namespace KopiLua
 		** so they must fit in LUAI_BITSINT-1 bits (-1 for sign)
 		*/
 		//#if SIZE_Bx < LUAI_BITSINT-1
-		public const int MAXARG_Bx         = ((1<<SIZE_Bx)-1);
-		public const int MAXARG_sBx        = (MAXARG_Bx>>1);         /* `sBx' is signed */
+		public const int MAXARG_Bx = ((1 << SIZE_Bx) - 1);
+		public const int MAXARG_sBx = (MAXARG_Bx >> 1);         /* `sBx' is signed */
 		//#else
 		//public const int MAXARG_Bx			= System.Int32.MaxValue;
 		//public const int MAXARG_sBx			= System.Int32.MaxValue;
 		//#endif
 
 
-		public const uint MAXARG_A        = (uint)((1 << (int)SIZE_A) -1);
-		public const uint MAXARG_B		  = (uint)((1 << (int)SIZE_B) -1);
-		public const uint MAXARG_C        = (uint)((1 << (int)SIZE_C) -1);
+		public const uint MAXARG_A = (uint)((1 << (int)SIZE_A) - 1);
+		public const uint MAXARG_B = (uint)((1 << (int)SIZE_B) - 1);
+		public const uint MAXARG_C = (uint)((1 << (int)SIZE_C) - 1);
 
 
 		/* creates a mask with `n' 1 bits at position `p' */
@@ -111,7 +111,7 @@ namespace KopiLua
 
 		internal static int GETARG_B(Instruction i)
 		{
-			return (int)((i>>POS_B) & MASK1(SIZE_B,0));
+			return (int)((i >> POS_B) & MASK1(SIZE_B, 0));
 		}
 		internal static int GETARG_B(InstructionPtr i) { return GETARG_B(i[0]); }
 
@@ -122,7 +122,7 @@ namespace KopiLua
 
 		internal static int GETARG_C(Instruction i)
 		{
-			return (int)((i>>POS_C) & MASK1(SIZE_C,0));
+			return (int)((i >> POS_C) & MASK1(SIZE_C, 0));
 		}
 		internal static int GETARG_C(InstructionPtr i) { return GETARG_C(i[0]); }
 
@@ -133,7 +133,7 @@ namespace KopiLua
 
 		internal static int GETARG_Bx(Instruction i)
 		{
-			return (int)((i>>POS_Bx) & MASK1(SIZE_Bx,0));
+			return (int)((i >> POS_Bx) & MASK1(SIZE_Bx, 0));
 		}
 		internal static int GETARG_Bx(InstructionPtr i) { return GETARG_Bx(i[0]); }
 
@@ -187,7 +187,7 @@ namespace KopiLua
 		/*
 		** invalid register that fits in 8 bits
 		*/
-		internal static readonly int NO_REG		= (int)MAXARG_A;
+		internal static readonly int NO_REG = (int)MAXARG_A;
 
 
 		/*
@@ -201,68 +201,69 @@ namespace KopiLua
 		** grep "ORDER OP" if you change these enums
 		*/
 
-		public enum OpCode {
-		/*----------------------------------------------------------------------
-		name		args	description
-		------------------------------------------------------------------------*/
-		OP_MOVE,/*	A B	R(A) := R(B)					*/
-		OP_LOADK,/*	A Bx	R(A) := Kst(Bx)					*/
-		OP_LOADBOOL,/*	A B C	R(A) := (Bool)B; if (C) pc++			*/
-		OP_LOADNIL,/*	A B	R(A) := ... := R(B) := nil			*/
-		OP_GETUPVAL,/*	A B	R(A) := UpValue[B]				*/
+		public enum OpCode
+		{
+			/*----------------------------------------------------------------------
+			name		args	description
+			------------------------------------------------------------------------*/
+			OP_MOVE,/*	A B	R(A) := R(B)					*/
+			OP_LOADK,/*	A Bx	R(A) := Kst(Bx)					*/
+			OP_LOADBOOL,/*	A B C	R(A) := (Bool)B; if (C) pc++			*/
+			OP_LOADNIL,/*	A B	R(A) := ... := R(B) := nil			*/
+			OP_GETUPVAL,/*	A B	R(A) := UpValue[B]				*/
 
-		OP_GETGLOBAL,/*	A Bx	R(A) := Gbl[Kst(Bx)]				*/
-		OP_GETTABLE,/*	A B C	R(A) := R(B)[RK(C)]				*/
+			OP_GETGLOBAL,/*	A Bx	R(A) := Gbl[Kst(Bx)]				*/
+			OP_GETTABLE,/*	A B C	R(A) := R(B)[RK(C)]				*/
 
-		OP_SETGLOBAL,/*	A Bx	Gbl[Kst(Bx)] := R(A)				*/
-		OP_SETUPVAL,/*	A B	UpValue[B] := R(A)				*/
-		OP_SETTABLE,/*	A B C	R(A)[RK(B)] := RK(C)				*/
+			OP_SETGLOBAL,/*	A Bx	Gbl[Kst(Bx)] := R(A)				*/
+			OP_SETUPVAL,/*	A B	UpValue[B] := R(A)				*/
+			OP_SETTABLE,/*	A B C	R(A)[RK(B)] := RK(C)				*/
 
-		OP_NEWTABLE,/*	A B C	R(A) := {} (size = B,C)				*/
+			OP_NEWTABLE,/*	A B C	R(A) := {} (size = B,C)				*/
 
-		OP_SELF,/*	A B C	R(A+1) := R(B); R(A) := R(B)[RK(C)]		*/
+			OP_SELF,/*	A B C	R(A+1) := R(B); R(A) := R(B)[RK(C)]		*/
 
-		OP_ADD,/*	A B C	R(A) := RK(B) + RK(C)				*/
-		OP_SUB,/*	A B C	R(A) := RK(B) - RK(C)				*/
-		OP_MUL,/*	A B C	R(A) := RK(B) * RK(C)				*/
-		OP_DIV,/*	A B C	R(A) := RK(B) / RK(C)				*/
-		OP_MOD,/*	A B C	R(A) := RK(B) % RK(C)				*/
-		OP_POW,/*	A B C	R(A) := RK(B) ^ RK(C)				*/
-		OP_UNM,/*	A B	R(A) := -R(B)					*/
-		OP_NOT,/*	A B	R(A) := not R(B)				*/
-		OP_LEN,/*	A B	R(A) := length of R(B)				*/
+			OP_ADD,/*	A B C	R(A) := RK(B) + RK(C)				*/
+			OP_SUB,/*	A B C	R(A) := RK(B) - RK(C)				*/
+			OP_MUL,/*	A B C	R(A) := RK(B) * RK(C)				*/
+			OP_DIV,/*	A B C	R(A) := RK(B) / RK(C)				*/
+			OP_MOD,/*	A B C	R(A) := RK(B) % RK(C)				*/
+			OP_POW,/*	A B C	R(A) := RK(B) ^ RK(C)				*/
+			OP_UNM,/*	A B	R(A) := -R(B)					*/
+			OP_NOT,/*	A B	R(A) := not R(B)				*/
+			OP_LEN,/*	A B	R(A) := length of R(B)				*/
 
-		OP_CONCAT,/*	A B C	R(A) := R(B).. ... ..R(C)			*/
+			OP_CONCAT,/*	A B C	R(A) := R(B).. ... ..R(C)			*/
 
-		OP_JMP,/*	sBx	pc+=sBx					*/
+			OP_JMP,/*	sBx	pc+=sBx					*/
 
-		OP_EQ,/*	A B C	if ((RK(B) == RK(C)) ~= A) then pc++		*/
-		OP_LT,/*	A B C	if ((RK(B) <  RK(C)) ~= A) then pc++  		*/
-		OP_LE,/*	A B C	if ((RK(B) <= RK(C)) ~= A) then pc++  		*/
+			OP_EQ,/*	A B C	if ((RK(B) == RK(C)) ~= A) then pc++		*/
+			OP_LT,/*	A B C	if ((RK(B) <  RK(C)) ~= A) then pc++  		*/
+			OP_LE,/*	A B C	if ((RK(B) <= RK(C)) ~= A) then pc++  		*/
 
-		OP_TEST,/*	A C	if not (R(A) <=> C) then pc++			*/ 
-		OP_TESTSET,/*	A B C	if (R(B) <=> C) then R(A) := R(B) else pc++	*/ 
+			OP_TEST,/*	A C	if not (R(A) <=> C) then pc++			*/
+			OP_TESTSET,/*	A B C	if (R(B) <=> C) then R(A) := R(B) else pc++	*/
 
-		OP_CALL,/*	A B C	R(A), ... ,R(A+C-2) := R(A)(R(A+1), ... ,R(A+B-1)) */
-		OP_TAILCALL,/*	A B C	return R(A)(R(A+1), ... ,R(A+B-1))		*/
-		OP_RETURN,/*	A B	return R(A), ... ,R(A+B-2)	(see note)	*/
+			OP_CALL,/*	A B C	R(A), ... ,R(A+C-2) := R(A)(R(A+1), ... ,R(A+B-1)) */
+			OP_TAILCALL,/*	A B C	return R(A)(R(A+1), ... ,R(A+B-1))		*/
+			OP_RETURN,/*	A B	return R(A), ... ,R(A+B-2)	(see note)	*/
 
-		OP_FORLOOP,/*	A sBx	R(A)+=R(A+2);
+			OP_FORLOOP,/*	A sBx	R(A)+=R(A+2);
 					if R(A) <?= R(A+1) then { pc+=sBx; R(A+3)=R(A) }*/
-		OP_FORPREP,/*	A sBx	R(A)-=R(A+2); pc+=sBx				*/
+			OP_FORPREP,/*	A sBx	R(A)-=R(A+2); pc+=sBx				*/
 
-		OP_TFORLOOP,/*	A C	R(A+3), ... ,R(A+2+C) := R(A)(R(A+1), R(A+2)); 
-								if R(A+3) ~= nil then R(A+2)=R(A+3) else pc++	*/ 
-		OP_SETLIST,/*	A B C	R(A)[(C-1)*FPF+i] := R(A+i), 1 <= i <= B	*/
+			OP_TFORLOOP,/*	A C	R(A+3), ... ,R(A+2+C) := R(A)(R(A+1), R(A+2)); 
+								if R(A+3) ~= nil then R(A+2)=R(A+3) else pc++	*/
+			OP_SETLIST,/*	A B C	R(A)[(C-1)*FPF+i] := R(A+i), 1 <= i <= B	*/
 
-		OP_CLOSE,/*	A 	close all variables in the stack up to (>=) R(A)*/
-		OP_CLOSURE,/*	A Bx	R(A) := closure(KPROTO[Bx], R(A), ... ,R(A+n))	*/
+			OP_CLOSE,/*	A 	close all variables in the stack up to (>=) R(A)*/
+			OP_CLOSURE,/*	A Bx	R(A) := closure(KPROTO[Bx], R(A), ... ,R(A+n))	*/
 
-		OP_VARARG/*	A B	R(A), R(A+1), ..., R(A+B-1) = vararg		*/
+			OP_VARARG/*	A B	R(A), R(A+1), ..., R(A+B-1) = vararg		*/
 		};
 
 
-		public const int NUM_OPCODES	= (int)OpCode.OP_VARARG;
+		public const int NUM_OPCODES = (int)OpCode.OP_VARARG;
 
 
 
@@ -294,16 +295,17 @@ namespace KopiLua
 		** bits 4-5: B arg mode
 		** bit 6: instruction set register A
 		** bit 7: operator is a test
-		*/  
+		*/
 
-		public enum OpArgMask {
-		  OpArgN,  /* argument is not used */
-		  OpArgU,  /* argument is used */
-		  OpArgR,  /* argument is a register or a jump offset */
-		  OpArgK   /* argument is a constant or register/constant */
+		public enum OpArgMask
+		{
+			OpArgN,  /* argument is not used */
+			OpArgU,  /* argument is used */
+			OpArgR,  /* argument is a register or a jump offset */
+			OpArgK   /* argument is a constant or register/constant */
 		};
 
-		public static OpMode getOpMode(OpCode m)	{return (OpMode)(luaP_opmodes[(int)m] & 3);}
+		public static OpMode getOpMode(OpCode m) { return (OpMode)(luaP_opmodes[(int)m] & 3); }
 		public static OpArgMask getBMode(OpCode m) { return (OpArgMask)((luaP_opmodes[(int)m] >> 4) & 3); }
 		public static OpArgMask getCMode(OpCode m) { return (OpArgMask)((luaP_opmodes[(int)m] >> 2) & 3); }
 		public static int testAMode(OpCode m) { return luaP_opmodes[(int)m] & (1 << 6); }
@@ -311,51 +313,50 @@ namespace KopiLua
 
 
 		/* number of list items to accumulate before a SETLIST instruction */
-		public const int LFIELDS_PER_FLUSH	= 50;
-
+		public const int LFIELDS_PER_FLUSH = 50;
 
 
 		/* ORDER OP */
-
-		private readonly static CharPtr[] luaP_opnames = {
-		  "MOVE",
-		  "LOADK",
-		  "LOADBOOL",
-		  "LOADNIL",
-		  "GETUPVAL",
-		  "GETGLOBAL",
-		  "GETTABLE",
-		  "SETGLOBAL",
-		  "SETUPVAL",
-		  "SETTABLE",
-		  "NEWTABLE",
-		  "SELF",
-		  "ADD",
-		  "SUB",
-		  "MUL",
-		  "DIV",
-		  "MOD",
-		  "POW",
-		  "UNM",
-		  "NOT",
-		  "LEN",
-		  "CONCAT",
-		  "JMP",
-		  "EQ",
-		  "LT",
-		  "LE",
-		  "TEST",
-		  "TESTSET",
-		  "CALL",
-		  "TAILCALL",
-		  "RETURN",
-		  "FORLOOP",
-		  "FORPREP",
-		  "TFORLOOP",
-		  "SETLIST",
-		  "CLOSE",
-		  "CLOSURE",
-		  "VARARG",
+		private readonly static CharPtr[] luaP_opnames =
+		{
+			"MOVE",
+			"LOADK",
+			"LOADBOOL",
+			"LOADNIL",
+			"GETUPVAL",
+			"GETGLOBAL",
+			"GETTABLE",
+			"SETGLOBAL",
+			"SETUPVAL",
+			"SETTABLE",
+			"NEWTABLE",
+			"SELF",
+			"ADD",
+			"SUB",
+			"MUL",
+			"DIV",
+			"MOD",
+			"POW",
+			"UNM",
+			"NOT",
+			"LEN",
+			"CONCAT",
+			"JMP",
+			"EQ",
+			"LT",
+			"LE",
+			"TEST",
+			"TESTSET",
+			"CALL",
+			"TAILCALL",
+			"RETURN",
+			"FORLOOP",
+			"FORPREP",
+			"TFORLOOP",
+			"SETLIST",
+			"CLOSE",
+			"CLOSURE",
+			"VARARG",
 		};
 
 
@@ -364,46 +365,47 @@ namespace KopiLua
 			return (lu_byte)(((t) << 7) | ((a) << 6) | (((lu_byte)b) << 4) | (((lu_byte)c) << 2) | ((lu_byte)m));
 		}
 
-		private readonly static lu_byte[] luaP_opmodes = {
+		private readonly static lu_byte[] luaP_opmodes =
+		{
 		/*       T  A    B       C     mode		   opcode	*/
-		  opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iABC) 		/* OP_MOVE */
-		 ,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgN, OpMode.iABx)		/* OP_LOADK */
-		 ,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgU, OpMode.iABC)		/* OP_LOADBOOL */
-		 ,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iABC)		/* OP_LOADNIL */
-		 ,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgN, OpMode.iABC)		/* OP_GETUPVAL */
-		 ,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgN, OpMode.iABx)		/* OP_GETGLOBAL */
-		 ,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgK, OpMode.iABC)		/* OP_GETTABLE */
-		 ,opmode(0, 0, OpArgMask.OpArgK, OpArgMask.OpArgN, OpMode.iABx)		/* OP_SETGLOBAL */
-		 ,opmode(0, 0, OpArgMask.OpArgU, OpArgMask.OpArgN, OpMode.iABC)		/* OP_SETUPVAL */
-		 ,opmode(0, 0, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_SETTABLE */
-		 ,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgU, OpMode.iABC)		/* OP_NEWTABLE */
-		 ,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgK, OpMode.iABC)		/* OP_SELF */
-		 ,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_ADD */
-		 ,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_SUB */
-		 ,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_MUL */
-		 ,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_DIV */
-		 ,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_MOD */
-		 ,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_POW */
-		 ,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iABC)		/* OP_UNM */
-		 ,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iABC)		/* OP_NOT */
-		 ,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iABC)		/* OP_LEN */
-		 ,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgR, OpMode.iABC)		/* OP_CONCAT */
-		 ,opmode(0, 0, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iAsBx)		/* OP_JMP */
-		 ,opmode(1, 0, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_EQ */
-		 ,opmode(1, 0, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_LT */
-		 ,opmode(1, 0, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_LE */
-		 ,opmode(1, 1, OpArgMask.OpArgR, OpArgMask.OpArgU, OpMode.iABC)		/* OP_TEST */
-		 ,opmode(1, 1, OpArgMask.OpArgR, OpArgMask.OpArgU, OpMode.iABC)		/* OP_TESTSET */
-		 ,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgU, OpMode.iABC)		/* OP_CALL */
-		 ,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgU, OpMode.iABC)		/* OP_TAILCALL */
-		 ,opmode(0, 0, OpArgMask.OpArgU, OpArgMask.OpArgN, OpMode.iABC)		/* OP_RETURN */
-		 ,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iAsBx)		/* OP_FORLOOP */
-		 ,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iAsBx)		/* OP_FORPREP */
-		 ,opmode(1, 0, OpArgMask.OpArgN, OpArgMask.OpArgU, OpMode.iABC)		/* OP_TFORLOOP */
-		 ,opmode(0, 0, OpArgMask.OpArgU, OpArgMask.OpArgU, OpMode.iABC)		/* OP_SETLIST */
-		 ,opmode(0, 0, OpArgMask.OpArgN, OpArgMask.OpArgN, OpMode.iABC)		/* OP_CLOSE */
-		 ,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgN, OpMode.iABx)		/* OP_CLOSURE */
-		 ,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgN, OpMode.iABC)		/* OP_VARARG */
+			opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iABC) 		/* OP_MOVE */
+			,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgN, OpMode.iABx)		/* OP_LOADK */
+			,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgU, OpMode.iABC)		/* OP_LOADBOOL */
+			,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iABC)		/* OP_LOADNIL */
+			,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgN, OpMode.iABC)		/* OP_GETUPVAL */
+			,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgN, OpMode.iABx)		/* OP_GETGLOBAL */
+			,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgK, OpMode.iABC)		/* OP_GETTABLE */
+			,opmode(0, 0, OpArgMask.OpArgK, OpArgMask.OpArgN, OpMode.iABx)		/* OP_SETGLOBAL */
+			,opmode(0, 0, OpArgMask.OpArgU, OpArgMask.OpArgN, OpMode.iABC)		/* OP_SETUPVAL */
+			,opmode(0, 0, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_SETTABLE */
+			,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgU, OpMode.iABC)		/* OP_NEWTABLE */
+			,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgK, OpMode.iABC)		/* OP_SELF */
+			,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_ADD */
+			,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_SUB */
+			,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_MUL */
+			,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_DIV */
+			,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_MOD */
+			,opmode(0, 1, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_POW */
+			,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iABC)		/* OP_UNM */
+			,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iABC)		/* OP_NOT */
+			,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iABC)		/* OP_LEN */
+			,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgR, OpMode.iABC)		/* OP_CONCAT */
+			,opmode(0, 0, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iAsBx)		/* OP_JMP */
+			,opmode(1, 0, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_EQ */
+			,opmode(1, 0, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_LT */
+			,opmode(1, 0, OpArgMask.OpArgK, OpArgMask.OpArgK, OpMode.iABC)		/* OP_LE */
+			,opmode(1, 1, OpArgMask.OpArgR, OpArgMask.OpArgU, OpMode.iABC)		/* OP_TEST */
+			,opmode(1, 1, OpArgMask.OpArgR, OpArgMask.OpArgU, OpMode.iABC)		/* OP_TESTSET */
+			,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgU, OpMode.iABC)		/* OP_CALL */
+			,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgU, OpMode.iABC)		/* OP_TAILCALL */
+			,opmode(0, 0, OpArgMask.OpArgU, OpArgMask.OpArgN, OpMode.iABC)		/* OP_RETURN */
+			,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iAsBx)		/* OP_FORLOOP */
+			,opmode(0, 1, OpArgMask.OpArgR, OpArgMask.OpArgN, OpMode.iAsBx)		/* OP_FORPREP */
+			,opmode(1, 0, OpArgMask.OpArgN, OpArgMask.OpArgU, OpMode.iABC)		/* OP_TFORLOOP */
+			,opmode(0, 0, OpArgMask.OpArgU, OpArgMask.OpArgU, OpMode.iABC)		/* OP_SETLIST */
+			,opmode(0, 0, OpArgMask.OpArgN, OpArgMask.OpArgN, OpMode.iABC)		/* OP_CLOSE */
+			,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgN, OpMode.iABx)		/* OP_CLOSURE */
+			,opmode(0, 1, OpArgMask.OpArgU, OpArgMask.OpArgN, OpMode.iABC)		/* OP_VARARG */
 		};
 
 	}

@@ -36,9 +36,9 @@ namespace KopiLua
 		//typedef unsigned char lu_byte;
 
 
-		public const uint MAX_SIZET	= uint.MaxValue - 2;
+		public const uint MAX_SIZET = uint.MaxValue - 2;
 
-		public const lu_mem MAX_LUMEM	= lu_mem.MaxValue - 2;
+		public const lu_mem MAX_LUMEM = lu_mem.MaxValue - 2;
 
 
 		public const int MAX_INT = (Int32.MaxValue - 2);  /* maximum value of an int (-2 for safety) */
@@ -65,12 +65,12 @@ namespace KopiLua
 #if lua_assert
 
 		[Conditional("DEBUG")]
-		internal static void lua_assert(bool c) {Debug.Assert(c);}
+		internal static void lua_assert(bool c) { Debug.Assert(c); }
 
 		[Conditional("DEBUG")]
 		internal static void lua_assert(int c) { Debug.Assert(c != 0); }
 
-		internal static object check_exp(bool c, object e)		{lua_assert(c); return e;}
+		internal static object check_exp(bool c, object e) { lua_assert(c); return e; }
 		internal static object check_exp(int c, object e) { lua_assert(c != 0); return e; }
 
 #else
@@ -123,32 +123,32 @@ namespace KopiLua
 
 
 		/* maximum stack for a Lua function */
-		public const int MAXSTACK	= 250;
+		public const int MAXSTACK = 250;
 
 
 
 		/* minimum size for the string table (must be power of 2) */
-		public const int MINSTRTABSIZE	= 32;
+		public const int MINSTRTABSIZE = 32;
 
 
 		/* minimum size for string buffer */
-		public const int LUA_MINBUFFER	= 32;
+		public const int LUA_MINBUFFER = 32;
 
 
-		#if !lua_lock
+#if !lua_lock
 		public static void lua_lock(lua_State L) { }
 		public static void lua_unlock(lua_State L) { }
-		#endif
-		
+#endif
 
-		#if !luai_threadyield
-		public static void luai_threadyield(lua_State L)     {lua_unlock(L); lua_lock(L);}
-		#endif
+
+#if !luai_threadyield
+		public static void luai_threadyield(lua_State L) { lua_unlock(L); lua_lock(L); }
+#endif
 
 
 		/*
 		** macro to control inclusion of some hard tests on stack reallocation
-		*/ 
+		*/
 		//#ifndef HARDSTACKTESTS
 		//#define condhardstacktests(x)	((void)0)
 		//#else
