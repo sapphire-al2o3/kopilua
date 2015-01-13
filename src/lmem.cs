@@ -17,7 +17,7 @@ namespace KopiLua
 	{
 		public const string MEMERRMSG	= "not enough memory";
 
-		public static T[] luaM_reallocv<T>(lua_State L, T[] block, int new_size)
+		public static T[] luaM_reallocv<T>(lua_State L, T[] block, int new_size) where T : new()
 		{
 			return (T[])luaM_realloc_(L, block, new_size);
 		}
@@ -27,24 +27,24 @@ namespace KopiLua
 		//public static void luaM_freearray(lua_State L, object b, int n, Type t) { luaM_reallocv(L, b, n, 0, Marshal.SizeOf(b)); }
 
 		// C# has it's own gc, so nothing to do here...in theory...
-		public static void luaM_freemem<T>(lua_State L, T b) { luaM_realloc_<T>(L, new T[] {b}, 0); }
-		public static void luaM_free<T>(lua_State L, T b) { luaM_realloc_<T>(L, new T[] {b}, 0); }
-		public static void luaM_freearray<T>(lua_State L, T[] b) { luaM_reallocv(L, b, 0); }
+		public static void luaM_freemem<T>(lua_State L, T b) where T : new() { luaM_realloc_<T>(L, new T[] {b}, 0); }
+		public static void luaM_free<T>(lua_State L, T b) where T : new() { luaM_realloc_<T>(L, new T[] {b}, 0); }
+		public static void luaM_freearray<T>(lua_State L, T[] b) where T : new() { luaM_reallocv(L, b, 0); }
 
-		public static T luaM_malloc<T>(lua_State L) { return (T)luaM_realloc_<T>(L); }
-		public static T luaM_new<T>(lua_State L) { return (T)luaM_realloc_<T>(L); }
-		public static T[] luaM_newvector<T>(lua_State L, int n)
+		public static T luaM_malloc<T>(lua_State L) where T : new() { return (T)luaM_realloc_<T>(L); }
+		public static T luaM_new<T>(lua_State L) where T : new() { return (T)luaM_realloc_<T>(L); }
+		public static T[] luaM_newvector<T>(lua_State L, int n) where T : new()
 		{
 			return luaM_reallocv<T>(L, null, n);
 		}
 
-		public static void luaM_growvector<T>(lua_State L, ref T[] v, int nelems, ref int size, int limit, CharPtr e)
+		public static void luaM_growvector<T>(lua_State L, ref T[] v, int nelems, ref int size, int limit, CharPtr e) where T : new()
 		{
 			if (nelems + 1 > size)
 				v = (T[])luaM_growaux_(L, ref v, ref size, limit, e);
 		}
 
-		public static T[] luaM_reallocvector<T>(lua_State L, ref T[] v, int oldn, int n)
+		public static T[] luaM_reallocvector<T>(lua_State L, ref T[] v, int oldn, int n) where T : new()
 		{
 			Debug.Assert((v == null && oldn == 0) || (v.Length == oldn));
 			v = luaM_reallocv<T>(L, v, n);
@@ -76,7 +76,7 @@ namespace KopiLua
 
 
 		public static T[] luaM_growaux_<T>(lua_State L, ref T[] block, ref int size,
-							 int limit, CharPtr errormsg)
+							 int limit, CharPtr errormsg) where T : new()
 		{
 			T[] newblock;
 			int newsize;
@@ -118,28 +118,28 @@ namespace KopiLua
 			return new_obj;
 		}
 
-		public static object luaM_realloc_<T>(lua_State L)
+		public static object luaM_realloc_<T>(lua_State L) where T : new()
 		{
 			int unmanaged_size = (int)GetUnmanagedSize(typeof(T));
 			int nsize = unmanaged_size;
-			T new_obj = (T)System.Activator.CreateInstance(typeof(T));
+			T new_obj = new T();
 			AddTotalBytes(L, nsize);
 			return new_obj;
 		}
 
-		public static object luaM_realloc_<T>(lua_State L, T obj)
+		public static object luaM_realloc_<T>(lua_State L, T obj) where T : new()
 		{
 			int unmanaged_size = (int)GetUnmanagedSize(typeof(T));
 			int old_size = (obj == null) ? 0 : unmanaged_size;
 			int osize = old_size * unmanaged_size;
 			int nsize = unmanaged_size;
-			T new_obj = (T)System.Activator.CreateInstance(typeof(T));
+			T new_obj = new T();
 			SubtractTotalBytes(L, osize);
 			AddTotalBytes(L, nsize);
 			return new_obj;
 		}
 
-		public static object luaM_realloc_<T>(lua_State L, T[] old_block, int new_size)
+		public static object luaM_realloc_<T>(lua_State L, T[] old_block, int new_size) where T : new()
 		{
 			int unmanaged_size = (int)GetUnmanagedSize(typeof(T));
 			int old_size = (old_block == null) ? 0 : old_block.Length;
@@ -149,7 +149,7 @@ namespace KopiLua
 			for (int i = 0; i < Math.Min(old_size, new_size); i++)
 				new_block[i] = old_block[i];
 			for (int i = old_size; i < new_size; i++)
-				new_block[i] = (T)System.Activator.CreateInstance(typeof(T));
+				new_block[i] = new T();
 			if (CanIndex(typeof(T)))
 				for (int i = 0; i < new_size; i++)
 				{

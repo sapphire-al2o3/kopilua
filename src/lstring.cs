@@ -143,5 +143,21 @@ namespace KopiLua
 			return u;
 		}
 
+		internal static Udata luaS_newudata<T>(lua_State L, Table e) where T : new()
+		{
+			Udata u = new Udata();
+			u.uv.marked = luaC_white(G(L));  /* is not finalized */
+			u.uv.tt = LUA_TUSERDATA;
+			u.uv.len = 0; /* gfoot: not sizeof(t)? */
+			u.uv.metatable = null;
+			u.uv.env = e;
+			u.user_data = luaM_realloc_<T>(L);
+			AddTotalBytes(L, GetUnmanagedSize(typeof(Udata)));
+			/* chain it on udata list (after main thread) */
+			u.uv.next = G(L).mainthread.next;
+			G(L).mainthread.next = obj2gco(u);
+			return u;
+		}
+
 	}
 }

@@ -86,7 +86,7 @@ namespace KopiLua
 		*/
 		private static FilePtr newfile (lua_State L) {
 
-		  FilePtr pf = (FilePtr)lua_newuserdata(L, typeof(FilePtr));
+			FilePtr pf = (FilePtr)lua_newuserdata<FilePtr>(L);
 		  pf.file = null;  /* file file is currently `closed' */
 		  luaL_getmetatable(L, LUA_FILEHANDLE);
 		  lua_setmetatable(L, -2);

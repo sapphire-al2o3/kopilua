@@ -65,6 +65,7 @@ namespace KopiLua
 		*/
         //public delegate object lua_Alloc(object ud, object ptr, uint osize, uint nsize);
 		public delegate object lua_Alloc(Type t);
+		public delegate T lua_Alloc<T>() where T : new();
 
 
 		/*

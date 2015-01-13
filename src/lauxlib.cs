@@ -750,6 +750,10 @@ namespace KopiLua
 			return System.Activator.CreateInstance(t);
 		}
 
+		private static T l_alloc<T>() where T: new()
+		{
+			return new T();
+		}
 
 		private static int panic (lua_State L) {
 		  //(void)L;  /* to avoid warnings */
@@ -761,7 +765,7 @@ namespace KopiLua
 
 		public static lua_State luaL_newstate()
 		{
-			lua_State L = lua_newstate(l_alloc, null);
+			lua_State L = lua_newstate(l_alloc<LG>, null);
 		  if (L != null) lua_atpanic(L, panic);
 		  return L;
 		}
