@@ -70,6 +70,20 @@ namespace KopiLua
 			return b;
 		}
 
+		public static object LoadMem<T>(LoadState S) where T : struct
+		{
+			int size = Marshal.SizeOf(typeof(T));
+			CharPtr str = new char[size];
+			LoadBlock(S, str, size);
+			byte[] bytes = new byte[str.chars.Length];
+			for (int i = 0; i < str.chars.Length; i++)
+				bytes[i] = (byte)str.chars[i];
+			GCHandle pinnedPacket = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+			object b = Marshal.PtrToStructure(pinnedPacket.AddrOfPinnedObject(), typeof(T));
+			pinnedPacket.Free();
+			return b;
+		}
+
 		public static object LoadMem(LoadState S, Type t, int n)
 		{
 #if SILVERLIGHT
@@ -86,6 +100,7 @@ namespace KopiLua
 		}
 		public static lu_byte LoadByte(LoadState S) { return (lu_byte)LoadChar(S); }
 		public static object LoadVar(LoadState S, Type t) { return LoadMem(S, t); }
+		public static object LoadVar<T>(LoadState S) where T : struct { return LoadMem<T>(S); }
 		public static object LoadVector(LoadState S, Type t, int n) { return LoadMem(S, t, n); }
 
 		private static void LoadBlock(LoadState S, CharPtr b, int size)
