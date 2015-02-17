@@ -483,7 +483,7 @@ namespace KopiLua
 		public static TValue luaH_getnum(Table t, int key)
 		{
 			/* (1 <= key && key <= t.sizearray) */
-			if ((uint)(key - 1) < (uint)t.sizearray)
+			if (key > 0 && key - 1 < t.sizearray)
 				return t.array[key - 1];
 			else
 			{

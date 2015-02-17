@@ -413,7 +413,7 @@ namespace KopiLua
 								success = read_line(L, f);
 								break;
 							case 'a':  /* file */
-								read_chars(L, f, ~((uint)0));  /* read MAX_uint chars */
+								read_chars(L, f, uint.MaxValue);  /* read MAX_uint chars */
 								success = 1; /* always success */
 								break;
 							default:
