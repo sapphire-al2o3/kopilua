@@ -92,8 +92,9 @@ namespace KopiLua
 			//return hashmod(t, (int)a[0]);
 
 			long l = BitConverter.DoubleToInt64Bits(n);
-			return hashmod(t, (int)((l >> 32) + (l & 0xFF)));
-
+			byte s = 0;
+			for (int i = 0; i < 8; i++) s += (byte)(l >> (i * 8) & 0xFF);
+			return hashmod(t, (int)s);
 		}
 
 
